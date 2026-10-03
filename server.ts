@@ -138,6 +138,44 @@ async function performWebSearch(query: string): Promise<string[]> {
   }
 }
 
+// =========================================================================
+// RESILIENT MULTI-MODEL GENERATION HELPER
+// Automatically fails over between gemini-flash-latest and gemini-3.8-flash
+// with a 7-second per-model timeout to avoid browser request drops.
+// =========================================================================
+async function generateContentWithFailover(params: {
+  contents: any;
+  config?: any;
+}) {
+  const modelsToTry = ['gemini-flash-latest', 'gemini-3.8-flash'];
+  let lastError: any = null;
+
+  for (const model of modelsToTry) {
+    try {
+      const callPromise = ai.models.generateContent({
+        model,
+        contents: params.contents,
+        config: params.config,
+      });
+
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error(`Timeout after 7000ms on model ${model}`)), 7000);
+      });
+
+      const response: any = await Promise.race([callPromise, timeoutPromise]);
+      if (response && (response.text || response.candidates?.length)) {
+        return response;
+      }
+    } catch (err: any) {
+      console.warn(`[Gemini Model ${model} failover notice]:`, err.message || err);
+      lastError = err;
+      await new Promise(r => setTimeout(r, 150));
+    }
+  }
+
+  throw lastError || new Error('All model attempts failed');
+}
+
 // Gemini Chat Endpoint
 app.post('/api/chat', async (req, res) => {
   try {
@@ -208,8 +246,7 @@ ${searchResults.join('\n\n')}`;
       + adaptiveMemory 
       + webSearchContext;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    const response = await generateContentWithFailover({
       contents,
       config: {
         systemInstruction: systemInstruction || defaultSystemInstruction,
@@ -240,13 +277,16 @@ ${format ? `Preferred Format: ${format}` : ''}
 
 CRITICAL REQUIREMENT:
 For every topic, the final result MUST include a complete, pristine 10 to 15 second text prompt ("videoPrompt") engineered specifically for image-to-video tools (e.g. Kling, Runway Gen-3, Luma Dream Machine, Sora, Pika). The user will provide a reference image and paste this prompt directly with zero edits.
-The videoPrompt MUST integrate all 6 dimensions in a cohesive, cinematic paragraph:
+The videoPrompt MUST integrate all 7 dimensions in a cohesive, cinematic paragraph:
 1. Exact 10-15 second timeline & natural progression
 2. Precise cinematic camera angles, lens movement (e.g., slow 35mm low-angle dolly push-in, orbital tracking)
 3. Bass audio atmosphere / sound design pulse (e.g., deep cinematic sub-bass rumble, punchy riser, crisp atmospheric silence)
 4. Expressive facial micro-reactions (e.g., skeptical squint, sudden realization shock, authentic smirk, micro-eye shifts)
 5. Atmospheric background environment & lighting (e.g., moody neon rim-light, volumetric smoke, high-contrast studio shadows)
 6. Fluid, lifelike organic physics & natural body movement (natural breathing, weight distribution, relaxed realistic motion)
+7. Character Spoken Dialogue: Each character MUST have exactly 1 sentence or two concise spoken lines each that fit comfortably within the 10-15 second video length (e.g. [Dialogue - Character A: "..." / Character B: "..."]).
+
+In "dialogueOutline", clearly outline the spoken dialogue with 1 sentence or two lines per character for teleprompter/script use.
 
 Respond with pure JSON matching this exact structure:
 {
@@ -255,23 +295,23 @@ Respond with pure JSON matching this exact structure:
   "niche": "e.g. Health, Comedy, Drama, Tech, Finance, Lifestyle",
   "description": "1-2 sentence core concept summary and payoff",
   "hook": "Exact first 2-second visual/spoken line that hooks viewer instantly",
-  "videoPrompt": "Cinematic 10-15 second sequence. [0:00-0:05] Camera opens on a low-angle 35mm slow tracking dolly push... [Face expressions: ...] [Background & Lighting: ...] [Natural movement: ...] [Audio vibe & Bass: deep sub-bass drop and atmospheric tension]. [0:05-0:10] ... [0:10-0:15] ... Photorealistic 8k, natural skin textures, hyper-organic motion.",
-  "dialogueOutline": "Beat 1: ...\\nBeat 2: ...\\nBeat 3: ...\\nBeat 4: ...",
+  "videoPrompt": "Cinematic 10-15 second sequence. [0:00-0:05] Camera opens on a low-angle 35mm slow tracking dolly push... [Dialogue - Character A: '...' / Character B: '...']. [Face expressions: ...] [Background & Lighting: ...] [Natural movement: ...] [Audio vibe & Bass: deep sub-bass drop and atmospheric tension]. [0:05-0:10] ... [0:10-0:15] ... Photorealistic 8k, natural skin textures, hyper-organic motion.",
+  "dialogueOutline": "Character A (Line 1): '...'\\nCharacter B (Line 1): '...'\\nCharacter A (Line 2): '...'\\nCharacter B (Line 2): '...'",
   "characters": "Talent / persona descriptions needed",
   "cameraNotes": "Shot list, angles, camera movement, and lighting",
   "backgroundSetting": "Filming backdrop and setting details",
   "estimatedViews": 1250000
 }`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    const response = await generateContentWithFailover({
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
       },
     });
 
-    const parsed = JSON.parse(response.text || '{}');
+    const rawText = (response.text || '{}').replace(/```json/gi, '').replace(/```/g, '').trim();
+    const parsed = JSON.parse(rawText || '{}');
     res.json(parsed);
   } catch (error: any) {
     console.error('Gemini Generate Idea Error:', error);
@@ -305,16 +345,28 @@ Return pure JSON:
   "highStakes": "..."
 }`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-      },
-    });
+    let parsedResult = null;
+    try {
+      const response = await generateContentWithFailover({
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+        },
+      });
 
-    const parsed = JSON.parse(response.text || '{}');
-    res.json(parsed);
+      const rawText = (response.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
+      parsedResult = JSON.parse(rawText);
+    } catch (apiErr: any) {
+      console.warn('Gemini Hook Polish API failed over to creative formulas:', apiErr.message);
+      const cleanH = hook.replace(/^["']|["']$/g, '').trim();
+      parsedResult = {
+        patternInterrupt: `Stop scrolling if you still think "${cleanH}" — wait until you see this.`,
+        curiosityGap: `Only 1% of creators know why this works every time: "${cleanH}"`,
+        highStakes: `Everyone has been doing this completely wrong: "${cleanH}"`
+      };
+    }
+
+    res.json(parsedResult);
   } catch (error: any) {
     console.error('Gemini Refine Hook Error:', error);
     res.status(500).json({ error: error.message || 'Failed to refine hook' });
