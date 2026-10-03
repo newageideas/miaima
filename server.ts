@@ -238,6 +238,16 @@ Topic/Concept: "${topic}"
 ${niche ? `Preferred Niche: ${niche}` : ''}
 ${format ? `Preferred Format: ${format}` : ''}
 
+CRITICAL REQUIREMENT:
+For every topic, the final result MUST include a complete, pristine 10 to 15 second text prompt ("videoPrompt") engineered specifically for image-to-video tools (e.g. Kling, Runway Gen-3, Luma Dream Machine, Sora, Pika). The user will provide a reference image and paste this prompt directly with zero edits.
+The videoPrompt MUST integrate all 6 dimensions in a cohesive, cinematic paragraph:
+1. Exact 10-15 second timeline & natural progression
+2. Precise cinematic camera angles, lens movement (e.g., slow 35mm low-angle dolly push-in, orbital tracking)
+3. Bass audio atmosphere / sound design pulse (e.g., deep cinematic sub-bass rumble, punchy riser, crisp atmospheric silence)
+4. Expressive facial micro-reactions (e.g., skeptical squint, sudden realization shock, authentic smirk, micro-eye shifts)
+5. Atmospheric background environment & lighting (e.g., moody neon rim-light, volumetric smoke, high-contrast studio shadows)
+6. Fluid, lifelike organic physics & natural body movement (natural breathing, weight distribution, relaxed realistic motion)
+
 Respond with pure JSON matching this exact structure:
 {
   "title": "Punchy Title",
@@ -245,6 +255,7 @@ Respond with pure JSON matching this exact structure:
   "niche": "e.g. Health, Comedy, Drama, Tech, Finance, Lifestyle",
   "description": "1-2 sentence core concept summary and payoff",
   "hook": "Exact first 2-second visual/spoken line that hooks viewer instantly",
+  "videoPrompt": "Cinematic 10-15 second sequence. [0:00-0:05] Camera opens on a low-angle 35mm slow tracking dolly push... [Face expressions: ...] [Background & Lighting: ...] [Natural movement: ...] [Audio vibe & Bass: deep sub-bass drop and atmospheric tension]. [0:05-0:10] ... [0:10-0:15] ... Photorealistic 8k, natural skin textures, hyper-organic motion.",
   "dialogueOutline": "Beat 1: ...\\nBeat 2: ...\\nBeat 3: ...\\nBeat 4: ...",
   "characters": "Talent / persona descriptions needed",
   "cameraNotes": "Shot list, angles, camera movement, and lighting",
@@ -307,6 +318,77 @@ Return pure JSON:
   } catch (error: any) {
     console.error('Gemini Refine Hook Error:', error);
     res.status(500).json({ error: error.message || 'Failed to refine hook' });
+  }
+});
+
+// =========================================================================
+// GEMINI HUMAN-SOUNDING FEMALE VOICE (TTS) ENDPOINT
+// Uses gemini-3.8-flash-lite-tts to generate natural, expressive human-sounding
+// speech audio in WAV format for Mia.
+// Supports prebuilt female voices: 'Kore' (warm, natural human) and 'Aoede' (conversational).
+// =========================================================================
+app.post('/api/tts', async (req, res) => {
+  try {
+    const { text, voice } = req.body;
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json({ error: 'Text string is required for speech synthesis' });
+    }
+
+    // Clean text: strip markdown stars, code fences, urls, hashtags, and excess punctuation
+    const cleanText = text
+      .replace(/[*#_`~>•]/g, '')
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/[\n\r]+/g, '. ')
+      .trim();
+
+    if (!cleanText) {
+      return res.status(400).json({ error: 'Cleaned text is empty' });
+    }
+
+    // Map voice options to official prebuilt Gemini female voices:
+    // Kore: warm, authentic human tone (default)
+    // Aoede: expressive, engaging, bright conversational tone
+    let voiceName = 'Kore';
+    if (voice === 'Aoede' || voice === 'expressive') {
+      voiceName = 'Aoede';
+    } else if (voice === 'Kore' || voice === 'natural_warm' || voice === 'natural_calm' || voice === 'british_female') {
+      voiceName = 'Kore';
+    }
+
+    // Limit length to keep audio latency low and responsive (under 400 chars)
+    const speechText = cleanText.length > 400 ? cleanText.slice(0, 397) + '...' : cleanText;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash-lite-tts',
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: speechText }],
+        },
+      ],
+      config: {
+        responseModalities: ['AUDIO'],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName },
+          },
+        },
+      },
+    });
+
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!base64Audio) {
+      return res.status(502).json({ error: 'No audio returned from Gemini TTS model' });
+    }
+
+    res.json({
+      audio: base64Audio,
+      mimeType: 'audio/wav',
+      voiceName,
+    });
+  } catch (error: any) {
+    console.error('Gemini TTS Error:', error);
+    res.status(500).json({ error: error.message || 'TTS generation failed' });
   }
 });
 

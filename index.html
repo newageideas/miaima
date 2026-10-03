@@ -838,6 +838,91 @@
       color: #ffffff;
     }
 
+    /* 10-15s AI Video Prompt Box (Image-to-Video Ready) */
+    .video-prompt-box {
+      margin-top: 14px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.55));
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .video-prompt-box:hover {
+      border-color: rgba(56, 189, 248, 0.55);
+      box-shadow: 0 6px 22px rgba(56, 189, 248, 0.15);
+    }
+
+    .video-prompt-header {
+      padding: 10px 14px;
+      background: rgba(56, 189, 248, 0.09);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .video-prompt-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-cyan);
+    }
+
+    .video-prompt-badge {
+      display: inline-block;
+      padding: 1px 7px;
+      background: rgba(99, 102, 241, 0.28);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      color: #c7d2fe;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: normal;
+    }
+
+    .btn-copy-prompt {
+      background: rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-copy-prompt:hover {
+      background: rgba(56, 189, 248, 0.3);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .video-prompt-content {
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #f1f5f9;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 220px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #272f42 transparent;
+    }
+
     /* Detailed Sections */
     .detail-section {
       margin-top: 16px;
@@ -1322,6 +1407,69 @@
 
     .adaptive-tag:hover {
       text-decoration: underline;
+    }
+
+    /* Human-Sounding Gemini Female Voice Option Strip */
+    .chat-voice-option-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 5px 14px;
+      background: rgba(15, 23, 42, 0.75);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+    }
+
+    .voice-opt-label {
+      color: #94a3b8;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .voice-select-dropdown {
+      background: #171d2b;
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: #f1f5f9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 6px;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+      flex: 1;
+      max-width: 190px;
+      text-overflow: ellipsis;
+      transition: border-color 0.15s;
+    }
+
+    .voice-select-dropdown:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-sample-voice {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-sample-voice:hover {
+      background: rgba(56, 189, 248, 0.28);
+      color: #ffffff;
+      transform: translateY(-1px);
     }
 
     /* Messages container */
@@ -2074,6 +2222,12 @@
             <textarea id="dialogueOutlineInput" class="form-textarea" style="min-height: 95px;" placeholder="Beat 1: Immediate test setup&#10;Beat 2: Surprising reaction & reveal&#10;Beat 3: The scientific or comedic twist&#10;Beat 4: Call to action in comments"></textarea>
           </div>
 
+          <div class="form-group full">
+            <label class="form-label" for="videoPromptInput">🎬 10-15s AI Video Prompt (Image-to-Video Ready)</label>
+            <textarea id="videoPromptInput" class="form-textarea" style="min-height: 80px; font-family: 'JetBrains Mono', monospace; font-size: 12px;" placeholder="Exact 10-15s sequence with camera angles, bass, facial expressions, background, and natural movement (auto-engineered by Mia if left blank)..."></textarea>
+            <span class="form-help">Pristine 10-15s sequence prompt with camera motion, bass tone, micro-expressions & lifelike movement. Ready to paste with a reference image.</span>
+          </div>
+
           <div class="form-grid form-grid-3 full">
             <div class="form-group">
               <label class="form-label" for="charactersInput">Characters / Personas</label>
@@ -2190,6 +2344,14 @@
       </div>
       <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Dialogue & Beats:</div>
       <div id="teleprompterScript" class="teleprompter-script-text">...</div>
+
+      <div class="teleprompter-hook-box" style="margin-top: 14px; background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.28);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase;">🎬 10-15s AI Video Prompt (Image-to-Video Ready):</span>
+          <button id="btnTeleprompterCopyPrompt" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">📋 Copy Prompt</button>
+        </div>
+        <div id="teleprompterVideoPrompt" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #f1f5f9; line-height: 1.55; white-space: pre-wrap;">...</div>
+      </div>
     </div>
   </div>
 
@@ -2236,6 +2398,10 @@
         <div class="form-group">
           <label class="form-label" for="editDialogueInput">Dialogue Outline / Beats</label>
           <textarea id="editDialogueInput" class="form-textarea" style="min-height: 80px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editVideoPromptInput">🎬 10-15s AI Video Prompt (Image-to-Video Ready)</label>
+          <textarea id="editVideoPromptInput" class="form-textarea" style="min-height: 80px; font-family: 'JetBrains Mono', monospace; font-size: 12px;"></textarea>
         </div>
         <div class="form-actions" style="margin-top: 8px;">
           <button type="button" id="cancelEditBtn" class="btn btn-secondary btn-sm">Cancel</button>
@@ -2315,6 +2481,18 @@
       <span id="btnViewMemory" class="adaptive-tag" title="Click to view what Mia learned">Learned Style ↗</span>
     </div>
 
+    <!-- Gemini Human-Sounding Female Voice Option Strip -->
+    <div class="chat-voice-option-strip">
+      <span class="voice-opt-label">🎙️ Gemini Voice:</span>
+      <select id="geminiVoiceSelect" class="voice-select-dropdown" aria-label="Select Gemini Female Voice Option">
+        <option value="Kore" selected>Gemini Kore (Warm Human Female)</option>
+        <option value="Aoede">Gemini Aoede (Lively Conversational)</option>
+        <option value="natural_calm">Gemini Calm (Gentle Female)</option>
+        <option value="browser">Browser Native Voice</option>
+      </select>
+      <button id="btnSampleVoice" class="btn-sample-voice" title="Test human female voice sample">▶ Test Voice</button>
+    </div>
+
     <!-- Active Speaking Audio Visualizer Wave -->
     <div id="voiceSoundwave" class="voice-soundwave">
       <div class="wave-bar"></div>
@@ -2336,9 +2514,9 @@
     <div id="chatMessages" class="chat-messages">
       <div class="chat-msg assistant">
         <span class="msg-sender">✨ Mia</span>
-        <div class="msg-bubble">Hey! 👋 I'm Mia, your creative development partner. I'm listening, learning your style, and ready to bounce hooks, scripts, and code together. What are we brainstorming today?</div>
+        <div class="msg-bubble">Hey, I'm Mia! What's on your mind?</div>
         <div class="msg-actions">
-          <button class="btn-msg-audio" onclick="speakText('Hey! I am Mia, your creative development partner. What are we brainstorming today?')">🔊 Listen</button>
+          <button class="btn-msg-audio" onclick="speakText('Hey, I\'m Mia! What\'s on your mind?')">🔊 Listen</button>
         </div>
       </div>
     </div>
@@ -2506,6 +2684,8 @@
     const cancelListenBtn = document.getElementById("cancelListenBtn");
     const btnViewMemory = document.getElementById("btnViewMemory");
     const chipMemoryNotes = document.getElementById("chipMemoryNotes");
+    const geminiVoiceSelect = document.getElementById("geminiVoiceSelect");
+    const btnSampleVoice = document.getElementById("btnSampleVoice");
 
     // Chat conversation history state
     let chatConversation = [];
@@ -2513,6 +2693,7 @@
     let isListening = false;
     let isLiveTalkMode = false;
     let speechRecognition = null;
+    let currentAudioObj = null;
 
     // Sample Starter Data
     const SEED_IDEAS = [
@@ -2523,6 +2704,7 @@
         niche: "Health",
         description: "Testing supermarket cold-pressed olive oils vs cheap synthetic blends in salted ice water to expose cloudy chemical additives live on camera.",
         hook: "Stop buying grocery store olive oil until you see what happens when I drop it in this salted ice water.",
+        videoPrompt: "12-second cinematic commercial macro sequence. [0:00-0:04] Camera glides on a silky 50mm probe lens, pushing into two crystal glass cylinders filled with salted ice water. [Face expressions: host has a sharp, focused analytical gaze, slight furrow of eyebrows in intense anticipation]. [Background & Lighting: matte black slate kitchen island with cold laboratory rim-lighting, atmospheric haze, and soft water droplets]. [Natural movement: slow, deliberate hand pour of golden olive oil droplets with lifelike fluid surface tension, authentic organic human motion]. [Audio & Bass: deep sub-bass cinematic impact drop as the oil hits the water surface, transitioning into crisp microscopic crystallization crackles]. [0:04-0:08] The organic oil droplet freezes into amber fractals while the store brand separates into murky cloudy yellow foam. [0:08-0:12] Camera pulls back smoothly to eye-level framing host's triumphant smirk into the lens. Photorealistic 8k, natural physics, hyper-detailed textures.",
         dialogueOutline: "Beat 1: Pour both samples into identical clear cylinders side-by-side.\nBeat 2: The 'certified organic' immediately crystallizes while the store brand separates into yellow foam.\nBeat 3: Read the microscopic pesticide loophole on the store brand back label.\nBeat 4: Drop the exact test you can do at home in 30 seconds.",
         characters: "Investigative host + deadpan chemistry assistant",
         cameraNotes: "Macro 50mm on oil drops, extreme close-up on crystal formation, clean overhead lighting",
@@ -2539,6 +2721,7 @@
         niche: "Comedy",
         description: "Girl asks her situationship to hold her unlocked phone while she ties her shoe, then watches his heart rate monitor spike in real time.",
         hook: "I handed him my unlocked phone for 4 seconds and his Apple Watch registered an irregular cardiac event.",
+        videoPrompt: "13-second dynamic POV comedy sequence. [0:00-0:04] Ground-level low angle POV from girlfriend tying a white sneaker, panning up to boyfriend holding her unlocked iPhone. [Face expressions: guy's eyes widen in sheer panic, pupils dilate, nervous swallow with subtle cheek muscle twitching as his Apple Watch vibrates]. [Background & Lighting: sun-drenched European coffee shop patio with soft golden bokeh and warm atmospheric shadows]. [Natural movement: boyfriend's hands make subtle, frantic balancing micro-adjustments trying to hold the phone flat without peeking at the screen, realistic organic body language]. [Audio & Bass: heart-rate monitor bass thump accelerating in rhythm, followed by a heavy comedic sub-drop when the screen notification pops]. [0:04-0:09] Whip-zoom into phone screen showing notification, then cut back to his guilty sweating forehead. [0:09-0:13] Slow pan back as girlfriend stands up smiling innocently. Lifelike skin tones, cinematic depth of field.",
         dialogueOutline: "Beat 1: 'Can you hold this? My sneaker came undone.'\nBeat 2: Phone buzzes with notification from 'Alex (Dermatologist) 🍆'.\nBeat 3: Guy does impossible gymnastic finger moves trying not to look while staring straight into the camera.\nBeat 4: The reveal: it's a doctor reminder for sunscreen, but his guilty sweat says everything.",
         characters: "Casual girlfriend + sweating situationship boyfriend",
         cameraNotes: "POV angle from girlfriend tying shoe, quick zoom cut to his frantic facial twitch",
@@ -2555,6 +2738,7 @@
         niche: "Drama",
         description: "New intern gets yelled at by mid-level manager for using high-end stationery, then quietly pulls out the deed to the building.",
         hook: "He told me interns don't deserve the ergonomic chair. Then he noticed my signature on his employment contract.",
+        videoPrompt: "14-second high-stakes corporate drama sequence. [0:00-0:05] Low-angle tracking dolly shot across a polished dark mahogany boardroom table. Mid-level manager leans forward aggressively pointing finger. [Face expressions: manager has a sneering smug grimace; young quiet intern maintains an unshakable, calm piercing stare with a subtle cold micro-smile]. [Background & Lighting: floor-to-ceiling glass penthouse overlooking sunset skyscrapers, dramatic rim lighting with volumetric dust motes]. [Natural movement: intern slowly, fluidly unscrews a heavy vintage brass fountain pen, smooth organic fingers with zero hesitation, uncapping the deed of ownership]. [Audio & Bass: tense orchestral drone building up to a massive, resonant bass impact that shakes the room as the boardroom double doors swing open]. [0:05-0:10] Two senior board directors enter bowed in respect. [0:10-0:14] Slow push-in on intern's commanding eye contact straight to camera. 8k cinematic realism, rich atmospheric contrast.",
         dialogueOutline: "Beat 1: Manager mocks the intern for taking notes with a vintage fountain pen.\nBeat 2: Manager threatens to dock his bonus before realizing interns don't have bonuses.\nBeat 3: Board members walk in with coffee and greet the intern as 'Mr. Hastings'.\nBeat 4: Cold stare into camera with silent paper shuffle.",
         characters: "Arrogant floor manager + unassuming quiet CEO intern + 2 stunned board members",
         cameraNotes: "Low angle power dynamic shot, slow zoom on the pen engraving, dramatic silence",
@@ -2803,6 +2987,7 @@
       const backgroundSetting = document.getElementById("backgroundSettingInput").value.trim();
       const estimatedViewsVal = document.getElementById("estimatedViewsInput").value;
       const estimatedViews = estimatedViewsVal ? Number(estimatedViewsVal) : 0;
+      const videoPromptVal = document.getElementById("videoPromptInput").value.trim();
 
       if (!title || !niche || !format || !description || !hook) {
         showToast("Please fill in all required fields.");
@@ -2813,12 +2998,17 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "Saving...";
 
+      const videoPrompt = videoPromptVal || getDefaultVideoPrompt({
+        title, niche, format, description, hook, cameraNotes, backgroundSetting, characters
+      });
+
       const newIdeaData = {
         title,
         niche,
         format,
         description,
         hook,
+        videoPrompt,
         dialogueOutline,
         characters,
         cameraNotes,
@@ -2942,6 +3132,46 @@
         }, 1800);
       }).catch(() => {
         showToast("Hook copied!");
+      });
+    };
+
+    /**
+     * GENERATE COMPREHENSIVE 10-15s AI VIDEO PROMPT (IMAGE-TO-VIDEO READY)
+     */
+    function getDefaultVideoPrompt(idea) {
+      if (idea && idea.videoPrompt && idea.videoPrompt.trim()) {
+        return idea.videoPrompt.trim();
+      }
+      const timing = "12-second cinematic sequence.";
+      const cam = (idea.cameraNotes && idea.cameraNotes.trim()) || "35mm anamorphic low-angle tracking push-in with shallow depth of field";
+      const bg = (idea.backgroundSetting && idea.backgroundSetting.trim()) || "Atmospheric cinematic lighting with high contrast and soft volumetric shadows";
+      const chars = (idea.characters && idea.characters.trim()) || "Protagonist with authentic commanding screen presence";
+      const hook = (idea.hook && idea.hook.trim()) || idea.title || "The unexpected viral twist";
+
+      return `${timing} [0:00-0:04] Camera opens on ${cam}, tracking into subject. [Face expressions: intense focus shifting into genuine surprise and heightened awareness as "${hook}" unfolds]. [Background & Lighting: ${bg}, soft rim-lighting and ambient shadows]. [Natural movement: fluid organic weight shift, authentic breathing cadence, relaxed natural micro-movements, zero uncanny rigidity]. [Audio & Bass: deep cinematic sub-bass impact drop followed by tense atmospheric rumble]. [0:04-0:08] Micro-reaction intensifies with authentic human physics. [0:08-0:12] Climactic visual payoff framed directly to camera. Photorealistic 8k, hyper-organic motion, masterwork cinematography.`;
+    }
+
+    /**
+     * COPY 10-15s AI VIDEO PROMPT TO CLIPBOARD
+     */
+    window.copyVideoPrompt = function(id, btnEl, event) {
+      if (event) event.stopPropagation();
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+      const promptText = getDefaultVideoPrompt(idea);
+      navigator.clipboard.writeText(promptText).then(() => {
+        const origHtml = btnEl.innerHTML;
+        btnEl.innerHTML = "Copied Prompt! ✓";
+        btnEl.style.color = "#34d399";
+        btnEl.style.borderColor = "rgba(52, 211, 153, 0.5)";
+        showToast("10-15s Video Prompt copied! Ready to paste with image reference. 🎬");
+        setTimeout(() => {
+          btnEl.innerHTML = origHtml;
+          btnEl.style.color = "";
+          btnEl.style.borderColor = "";
+        }, 2000);
+      }).catch(() => {
+        showToast("Prompt copied to clipboard!");
       });
     };
 
@@ -3255,6 +3485,20 @@
               <div class="hook-content">"${escapeHtml(idea.hook || 'No hook provided.')}"</div>
             </div>
 
+            <!-- 10-15s AI Video Prompt Box (Image-to-Video Ready) -->
+            <div class="video-prompt-box">
+              <div class="video-prompt-header">
+                <div class="video-prompt-title">
+                  <span>🎬</span>
+                  <span>10-15s AI Video Prompt <span class="video-prompt-badge">Image-to-Video Ready</span></span>
+                </div>
+                <button class="btn-copy-prompt" onclick="copyVideoPrompt('${safeId}', this, event)">
+                  📋 Copy 10-15s Prompt
+                </button>
+              </div>
+              <div class="video-prompt-content">${escapeHtml(idea.videoPrompt || getDefaultVideoPrompt(idea))}</div>
+            </div>
+
             ${idea.dialogueOutline ? `
               <div class="detail-section">
                 <div class="detail-heading">🎬 Dialogue Outline & Script Beats</div>
@@ -3343,13 +3587,14 @@
         if (data.niche) document.getElementById("nicheInput").value = data.niche;
         if (data.description) document.getElementById("descriptionInput").value = data.description;
         if (data.hook) document.getElementById("hookInput").value = data.hook;
+        if (data.videoPrompt) document.getElementById("videoPromptInput").value = data.videoPrompt;
         if (data.dialogueOutline) document.getElementById("dialogueOutlineInput").value = data.dialogueOutline;
         if (data.characters) document.getElementById("charactersInput").value = data.characters;
         if (data.cameraNotes) document.getElementById("cameraNotesInput").value = data.cameraNotes;
         if (data.backgroundSetting) document.getElementById("backgroundSettingInput").value = data.backgroundSetting;
         if (data.estimatedViews) document.getElementById("estimatedViewsInput").value = data.estimatedViews;
 
-        showToast("✨ Gemini engineered your viral trend draft!");
+        showToast("✨ Gemini engineered your viral trend draft with 10-15s AI Video Prompt!");
       } catch (err) {
         console.error("AI Draft error:", err);
         showToast("AI Auto-Draft failed: " + err.message);
@@ -3372,6 +3617,18 @@
       teleprompterFormat.textContent = (idea.niche ? idea.niche + " • " : "") + (idea.format || "");
       teleprompterHook.textContent = `"${idea.hook || 'No hook defined.'}"`;
       teleprompterScript.textContent = idea.dialogueOutline || "No script beats logged for this idea.";
+
+      const promptVal = idea.videoPrompt || getDefaultVideoPrompt(idea);
+      const teleprompterVideoPrompt = document.getElementById("teleprompterVideoPrompt");
+      if (teleprompterVideoPrompt) {
+        teleprompterVideoPrompt.textContent = promptVal;
+      }
+      const btnTeleprompterCopyPrompt = document.getElementById("btnTeleprompterCopyPrompt");
+      if (btnTeleprompterCopyPrompt) {
+        btnTeleprompterCopyPrompt.onclick = (e) => {
+          copyVideoPrompt(idea.id, btnTeleprompterCopyPrompt, e);
+        };
+      }
 
       teleprompterModalOverlay.classList.add("active");
     };
@@ -3482,6 +3739,10 @@
       editHookInput.value = idea.hook || "";
       editDescInput.value = idea.description || "";
       editDialogueInput.value = idea.dialogueOutline || "";
+      const editVideoPromptInput = document.getElementById("editVideoPromptInput");
+      if (editVideoPromptInput) {
+        editVideoPromptInput.value = idea.videoPrompt || getDefaultVideoPrompt(idea);
+      }
 
       editModalOverlay.classList.add("active");
     };
@@ -3497,9 +3758,11 @@
       const hook = editHookInput.value.trim();
       const description = editDescInput.value.trim();
       const dialogueOutline = editDialogueInput.value.trim();
+      const editVideoPromptInput = document.getElementById("editVideoPromptInput");
+      const videoPrompt = editVideoPromptInput ? editVideoPromptInput.value.trim() : "";
 
       try {
-        const payload = { title, hook, description, dialogueOutline };
+        const payload = { title, hook, description, dialogueOutline, videoPrompt };
         if (isLiveFirestore) {
           const docRef = doc(db, "trendIdeas", id);
           await updateDoc(docRef, payload);
@@ -3550,6 +3813,9 @@ EST. VIEWS: ${formatViews(idea.estimatedViews)}
 
 ⚡ 2-SECOND HOOK:
 "${idea.hook || ''}"
+
+🎬 10-15S AI VIDEO PROMPT (IMAGE-TO-VIDEO READY):
+${idea.videoPrompt || getDefaultVideoPrompt(idea)}
 
 📝 CONCEPT PAYOFF:
 ${idea.description || ''}
@@ -3607,7 +3873,7 @@ ${idea.dialogueOutline || 'N/A'}`;
           voiceToggleIcon.textContent = "🔊";
           voiceToggleText.textContent = "Voice On";
           showToast("Mia voice narration enabled");
-          speakText("Voice enabled! I'm ready to brainstorm with you.");
+          speakText("Hey! I'm Mia. What's on your mind?");
         } else {
           toggleVoiceSpeechBtn.classList.remove("voice-active");
           voiceToggleIcon.textContent = "🔇";
@@ -3622,6 +3888,31 @@ ${idea.dialogueOutline || 'N/A'}`;
         }
       });
 
+      // Gemini Female Voice Select Persistence & Live Test
+      if (geminiVoiceSelect) {
+        try {
+          const savedVoice = localStorage.getItem("mia_gemini_voice");
+          if (savedVoice) {
+            geminiVoiceSelect.value = savedVoice;
+          }
+        } catch (e) {}
+
+        geminiVoiceSelect.addEventListener("change", () => {
+          try {
+            localStorage.setItem("mia_gemini_voice", geminiVoiceSelect.value);
+          } catch (e) {}
+          const selectedText = geminiVoiceSelect.options[geminiVoiceSelect.selectedIndex].text;
+          showToast(`Voice set to: ${selectedText}`);
+          speakText("Hey! I'm Mia. What's on your mind?");
+        });
+      }
+
+      if (btnSampleVoice) {
+        btnSampleVoice.addEventListener("click", () => {
+          speakText("Hey! I'm Mia. What's on your mind?");
+        });
+      }
+
       // Live Conversational Talk (Hands-free voice loop like Gemini Live)
       btnLiveTalk.addEventListener("click", () => {
         isLiveTalkMode = !isLiveTalkMode;
@@ -3634,9 +3925,7 @@ ${idea.dialogueOutline || 'N/A'}`;
           liveTalkText.textContent = "Live Talk On";
           showToast("Live Voice Talk with Mia active! Speak to her.");
           
-          if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
-            speakText("Live talk active. I'm listening!");
-          }
+          speakText("Hey! I'm Mia. What's on your mind?");
         } else {
           btnLiveTalk.classList.remove("live-talk-active");
           liveTalkText.textContent = "Live Talk";
@@ -3852,9 +4141,9 @@ ${idea.dialogueOutline || 'N/A'}`;
         chatInput.focus();
         alignChatPanelToButton();
 
-        // Mia speaks once clicked on to open!
+        // Mia speaks her name and asks what's on your mind once opened!
         if (autoVoiceEnabled) {
-          speakText("Hey! I'm Mia, your creative development partner. What are we brainstorming today?");
+          speakText("Hey! I'm Mia. What's on your mind?");
         }
       } else {
         stopSpeaking();
@@ -4170,7 +4459,7 @@ ${idea.dialogueOutline || 'N/A'}`;
     }
 
     /**
-     * Speech Synthesis (Mia Female Voice Intelligence)
+     * Speech Synthesis (Mia Human Female Voice via Gemini TTS & WebSpeech Fallback)
      */
     function getFemaleVoice() {
       if (!window.speechSynthesis) return null;
@@ -4212,54 +4501,135 @@ ${idea.dialogueOutline || 'N/A'}`;
       return voices.find(v => v.lang.startsWith("en")) || voices[0];
     }
 
-    window.speakText = function(textToSpeak) {
+    function speakBrowserUtterance(cleaned) {
       if (!window.speechSynthesis) {
-        showToast("Voice speech is not supported in this browser.");
+        voiceSoundwave.classList.remove("active");
         return;
       }
 
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(cleaned);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.12; // Warm feminine tone
 
-      // Clean markdown stars/hashtags for smooth speech
+        const femaleVoice = getFemaleVoice();
+        if (femaleVoice) {
+          utterance.voice = femaleVoice;
+        }
+
+        utterance.onstart = () => {
+          voiceSoundwave.classList.add("active");
+          if (voiceListeningBanner) voiceListeningBanner.classList.remove("active");
+        };
+
+        utterance.onend = () => {
+          voiceSoundwave.classList.remove("active");
+          if (isLiveTalkMode) {
+            setTimeout(() => {
+              startListeningHandsFree();
+            }, 350);
+          }
+        };
+
+        utterance.onerror = () => {
+          voiceSoundwave.classList.remove("active");
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn("Browser speech synthesis error:", err);
+        voiceSoundwave.classList.remove("active");
+      }
+    }
+
+    window.speakText = async function(textToSpeak) {
+      stopSpeaking();
+
+      if (!textToSpeak) return;
+
+      // Clean markdown formatting, brackets, URLs, and excess symbols for smooth speech
       const cleaned = textToSpeak
         .replace(/[*#_`~>•]/g, "")
         .replace(/https?:\/\/\S+/g, "")
-        .replace(/\n+/g, ". ");
+        .replace(/\n+/g, ". ")
+        .trim();
 
-      const utterance = new SpeechSynthesisUtterance(cleaned);
-      utterance.rate = 1.02; // Smooth conversational speed
-      utterance.pitch = 1.14; // Warm, energetic feminine tone
+      if (!cleaned) return;
 
-      const femaleVoice = getFemaleVoice();
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
+      const selectedVoice = geminiVoiceSelect ? geminiVoiceSelect.value : "Kore";
+
+      // If user selected browser native voice, play via SpeechSynthesis
+      if (selectedVoice === "browser") {
+        speakBrowserUtterance(cleaned);
+        return;
       }
 
-      utterance.onstart = () => {
-        voiceSoundwave.classList.add("active");
-        if (voiceListeningBanner) voiceListeningBanner.classList.remove("active");
-      };
+      // Visual indicator for active speaking
+      voiceSoundwave.classList.add("active");
+      if (voiceListeningBanner) voiceListeningBanner.classList.remove("active");
 
-      utterance.onend = () => {
-        voiceSoundwave.classList.remove("active");
-        // Hands-free conversational loop: when Mai finishes speaking, listen to user!
-        if (isLiveTalkMode) {
-          setTimeout(() => {
-            startListeningHandsFree();
-          }, 350);
+      try {
+        // Request human-sounding female voice from Gemini TTS endpoint (/api/tts)
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: cleaned,
+            voice: selectedVoice
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error(`TTS server responded with ${res.status}`);
         }
-      };
 
-      utterance.onerror = () => {
-        voiceSoundwave.classList.remove("active");
-      };
+        const data = await res.json();
+        if (!data.audio) {
+          throw new Error("No audio returned from Gemini");
+        }
 
-      window.speechSynthesis.speak(utterance);
+        // Play real Gemini audio with HTML5 Audio
+        const audio = new Audio("data:audio/wav;base64," + data.audio);
+        currentAudioObj = audio;
+
+        audio.onended = () => {
+          voiceSoundwave.classList.remove("active");
+          currentAudioObj = null;
+          // Live Talk conversational loop: listen automatically when Mia finishes speaking
+          if (isLiveTalkMode) {
+            setTimeout(() => {
+              startListeningHandsFree();
+            }, 300);
+          }
+        };
+
+        audio.onerror = (e) => {
+          console.warn("Audio playback error, falling back to browser synthesis:", e);
+          currentAudioObj = null;
+          speakBrowserUtterance(cleaned);
+        };
+
+        await audio.play();
+
+      } catch (err) {
+        console.warn("Gemini TTS unavailable, falling back to browser voice:", err);
+        speakBrowserUtterance(cleaned);
+      }
     };
 
     function stopSpeaking() {
+      if (currentAudioObj) {
+        try {
+          currentAudioObj.pause();
+          currentAudioObj.currentTime = 0;
+        } catch (e) {}
+        currentAudioObj = null;
+      }
       if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
       }
       voiceSoundwave.classList.remove("active");
     }
