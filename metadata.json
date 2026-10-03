@@ -1,0 +1,6 @@
+{
+  "name": "SASHA / IMA — Trend Picker",
+  "description": "Trend intelligence dashboard for Sasha & Ima to track, curate, and produce viral trend ideas in real time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

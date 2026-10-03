@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SASHA / IMA — Trend Picker</title>
+  <meta name="description" content="Trend intelligence dashboard for Sasha & Ima to track, curate, and produce viral trend ideas in real time.">
+  <meta property="og:title" content="SASHA / IMA — Trend Picker">
+  <meta property="og:description" content="Trend intelligence dashboard for Sasha & Ima to track, curate, and produce viral trend ideas in real time.">
+  <meta property="og:type" content="website">
+
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #0a0c10;
+      --bg-card: #12151c;
+      --bg-card-hover: #161b24;
+      --bg-card-expanded: #141822;
+      --bg-surface: #191e2b;
+      --border-subtle: #222938;
+      --border-highlight: #333d52;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --accent-cyan: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+
+      --status-pending-bg: rgba(71, 85, 105, 0.2);
+      --status-pending-text: #94a3b8;
+      --status-pending-border: #475569;
+
+      --status-picked-bg: rgba(56, 189, 248, 0.15);
+      --status-picked-text: #38bdf8;
+      --status-picked-border: rgba(56, 189, 248, 0.4);
+
+      --status-in_production-bg: rgba(245, 158, 11, 0.15);
+      --status-in_production-text: #fbbf24;
+      --status-in_production-border: rgba(245, 158, 11, 0.4);
+
+      --status-done-bg: rgba(16, 185, 129, 0.15);
+      --status-done-text: #34d399;
+      --status-done-border: rgba(16, 185, 129, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    /* Container */
+    .app-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    @media (min-width: 640px) {
+      .app-container {
+        padding: 32px 24px;
+      }
+    }
+
+    /* Top Branding Header */
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 640px) {
+      .header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wordmark {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wordmark .name-sasha {
+      color: #ffffff;
+    }
+
+    .wordmark .slash {
+      color: var(--accent-cyan);
+      font-weight: 900;
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    }
+
+    .wordmark .name-ima {
+      color: #e2e8f0;
+    }
+
+    .wordmark .pill-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(56, 189, 248, 0.2));
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      margin-left: 6px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Primary Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      color: #ffffff;
+      border-color: #6366f1;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4338ca, #2563eb);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-highlight);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* Notification Banner */
+    .banner {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .banner.alert {
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.1);
+      color: #fca5a5;
+    }
+
+    .banner-icon {
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .banner-text {
+      flex: 1;
+    }
+
+    .banner-text code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #7dd3fc;
+      font-size: 12px;
+    }
+
+    /* Collapsible Add Form */
+    .form-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .form-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-grid-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-label .req {
+      color: #f43f5e;
+      margin-left: 2px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      background: #0d0f14;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+      width: 100%;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 75px;
+      line-height: 1.4;
+    }
+
+    .form-help {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Filter & Control Bar */
+    .controls-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .status-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .status-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--border-highlight);
+    }
+
+    .filter-pill.active {
+      background: #1e293b;
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .filter-pill .count {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1px 6px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .filter-pill.active .count {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
+
+    .search-and-sort {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .search-and-sort {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 450px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 12px 8px 34px;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .dropdown-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .filter-select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    /* Trend Ideas Cards List */
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .idea-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .idea-card:hover {
+      border-color: var(--border-highlight);
+      background: var(--bg-card-hover);
+    }
+
+    .idea-card.is-expanded {
+      background: var(--bg-card-expanded);
+      border-color: #3b4254;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Card Header (Collapsed Summary) */
+    .card-header {
+      padding: 16px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .card-header {
+        padding: 18px 20px;
+      }
+    }
+
+    .card-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tags-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid;
+    }
+
+    .status-badge.status-pending {
+      background: var(--status-pending-bg);
+      color: var(--status-pending-text);
+      border-color: var(--status-pending-border);
+    }
+
+    .status-badge.status-picked {
+      background: var(--status-picked-bg);
+      color: var(--status-picked-text);
+      border-color: var(--status-picked-border);
+    }
+
+    .status-badge.status-in_production {
+      background: var(--status-in_production-bg);
+      color: var(--status-in_production-text);
+      border-color: var(--status-in_production-border);
+    }
+
+    .status-badge.status-done {
+      background: var(--status-done-bg);
+      color: var(--status-done-text);
+      border-color: var(--status-done-border);
+    }
+
+    .tag-pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .tag-niche {
+      background: rgba(99, 102, 241, 0.12);
+      color: #c7d2fe;
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .tag-views {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(245, 158, 11, 0.1);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .picked-by-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .card-summary-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .expand-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, background-color 0.15s;
+    }
+
+    .idea-card.is-expanded .expand-indicator {
+      transform: rotate(180deg);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    /* Card Action Toolbar */
+    .card-quick-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pick-buttons-wrap {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      gap: 4px;
+    }
+
+    .pick-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 0 6px;
+      font-weight: 500;
+    }
+
+    .btn-pick {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+    }
+
+    .btn-pick:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-status-advance {
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .btn-in_production {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .btn-in_production:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-mark-done {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .btn-mark-done:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-revert {
+      background: transparent;
+      color: var(--text-muted);
+      border-color: var(--border-subtle);
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+    .btn-revert:hover {
+      color: var(--text-secondary);
+      border-color: var(--border-highlight);
+    }
+
+    .timestamp-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Card Expanded Body */
+    .card-body {
+      display: none;
+      padding: 0 16px 20px 16px;
+      border-top: 1px dashed var(--border-subtle);
+      background: rgba(10, 12, 16, 0.5);
+    }
+
+    @media (min-width: 640px) {
+      .card-body {
+        padding: 0 20px 24px 20px;
+      }
+    }
+
+    .idea-card.is-expanded .card-body {
+      display: block;
+      animation: expandIn 0.2s ease-out;
+    }
+
+    @keyframes expandIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* High-impact Hook Box */
+    .hook-callout {
+      margin-top: 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.08));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-left: 4px solid var(--accent-cyan);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .hook-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .hook-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hook-content {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.5;
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-secondary);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    /* Detailed Sections */
+    .detail-section {
+      margin-top: 16px;
+    }
+
+    .detail-heading {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .detail-box {
+      background: #0f1218;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .detail-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .mini-spec {
+      background: #0f1218;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .mini-spec-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .mini-spec-val {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 12px;
+    }
+
+    .empty-state-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .empty-state-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      margin: 0 auto 16px auto;
+    }
+
+    /* Modal for Quick Picking */
+    .pick-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .pick-modal-overlay.active {
+      display: flex;
+    }
+
+    .pick-modal {
+      background: #151822;
+      border: 1px solid var(--border-highlight);
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      animation: modalScale 0.15s ease-out;
+    }
+
+    @keyframes modalScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .pick-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .pick-modal-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .pick-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-persona {
+      padding: 16px 12px;
+      border-radius: 10px;
+      background: #1c2230;
+      border: 1px solid var(--border-subtle);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-persona:hover {
+      background: #252e42;
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+
+    .persona-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .avatar-sasha {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      color: #ffffff;
+    }
+
+    .avatar-ima {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      color: #ffffff;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid var(--border-highlight);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      animation: toastIn 0.2s ease-out;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+
+  <!-- Importmap for standard modular Firebase SDK v11+ from CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Top Header & Branding -->
+    <header class="header">
+      <div class="brand-wrap">
+        <div class="wordmark">
+          <span class="name-sasha">SASHA</span>
+          <span class="slash">/</span>
+          <span class="name-ima">IMA</span>
+          <span class="pill-tag">TREND PICKER</span>
+        </div>
+        <div class="tagline">Trend intelligence, built together.</div>
+      </div>
+      <div class="header-actions">
+        <button id="toggleFormBtn" class="btn btn-primary">
+          <span id="toggleIcon">+</span>
+          <span id="toggleText">New Trend Idea</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Status Banner (Live Sync vs Demo Mode) -->
+    <div id="statusBanner" class="banner" style="display: none;">
+      <div class="banner-icon">⚡</div>
+      <div class="banner-text" id="statusBannerText">Connecting to Firestore...</div>
+    </div>
+
+    <!-- Collapsible Add New Trend Idea Form -->
+    <section id="newIdeaFormPanel" class="form-panel">
+      <div class="form-title">
+        <span>Create New Trend Idea</span>
+        <button type="button" id="closeFormBtn" class="btn btn-secondary btn-sm" style="padding: 4px 8px;">✕</button>
+      </div>
+      
+      <form id="addIdeaForm">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label" for="titleInput">Title <span class="req">*</span></label>
+            <input type="text" id="titleInput" class="form-input" placeholder="e.g. Organic vs Lab Float Test" required>
+          </div>
+
+          <div class="form-grid form-grid-3 full">
+            <div class="form-group">
+              <label class="form-label" for="nicheInput">Niche <span class="req">*</span></label>
+              <input type="text" id="nicheInput" list="nicheSuggestions" class="form-input" placeholder="e.g. Health, Comedy, Drama" required>
+              <datalist id="nicheSuggestions">
+                <option value="Health">
+                <option value="Comedy">
+                <option value="Drama">
+                <option value="Tech">
+                <option value="Finance">
+                <option value="Beauty">
+                <option value="Lifestyle">
+                <option value="Relationships">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formatInput">Format <span class="req">*</span></label>
+              <input type="text" id="formatInput" list="formatSuggestions" class="form-input" placeholder="e.g. organic vs lab float test, rich CEO reveal" required>
+              <datalist id="formatSuggestions">
+                <option value="organic vs lab float test">
+                <option value="situationship drama">
+                <option value="rich CEO reveal">
+                <option value="POV street test">
+                <option value="myth buster comparison">
+                <option value="first 3-second visual shock">
+                <option value="interview switcheroo">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="estimatedViewsInput">Estimated Views</label>
+              <input type="number" id="estimatedViewsInput" class="form-input" placeholder="e.g. 750000" min="0" step="1000">
+              <span class="form-help">Projected viral benchmark</span>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="descriptionInput">Concept Summary <span class="req">*</span></label>
+            <textarea id="descriptionInput" class="form-textarea" placeholder="Short 1-2 sentence pitch explaining the payoff and why it hooks the viewer..." required></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="hookInput">Hook (First 2 Seconds) <span class="req">*</span></label>
+            <textarea id="hookInput" class="form-textarea" placeholder="The exact opening visual or spoken line: 'Stop buying grocery store olive oil until you see what happens in this glass...'" style="border-left: 3px solid var(--accent-cyan);" required></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="dialogueOutlineInput">Dialogue Outline / Script Beats</label>
+            <textarea id="dialogueOutlineInput" class="form-textarea" style="min-height: 95px;" placeholder="Beat 1: Immediate test setup&#10;Beat 2: Surprising reaction & reveal&#10;Beat 3: The scientific or comedic twist&#10;Beat 4: Call to action in comments"></textarea>
+          </div>
+
+          <div class="form-grid form-grid-3 full">
+            <div class="form-group">
+              <label class="form-label" for="charactersInput">Characters / Personas</label>
+              <input type="text" id="charactersInput" class="form-input" placeholder="e.g. Skeptic buyer + smug chemist">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cameraNotesInput">Camera Notes / Shot List</label>
+              <input type="text" id="cameraNotesInput" class="form-input" placeholder="e.g. Macro lens, high-speed drop, quick pan">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="backgroundSettingInput">Background Setting</label>
+              <input type="text" id="backgroundSettingInput" class="form-input" placeholder="e.g. Stainless steel kitchen counter">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="cancelFormBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="submitIdeaBtn" class="btn btn-primary">Save Trend Idea</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Filter & Control Bar -->
+    <div class="controls-bar">
+      <!-- Status Filter Tabs -->
+      <div class="status-filters" id="statusFilterTabs">
+        <button class="filter-pill active" data-status="all">
+          All <span class="count" id="countAll">0</span>
+        </button>
+        <button class="filter-pill" data-status="pending">
+          Pending <span class="count" id="countPending">0</span>
+        </button>
+        <button class="filter-pill" data-status="picked">
+          Picked <span class="count" id="countPicked">0</span>
+        </button>
+        <button class="filter-pill" data-status="in_production">
+          In Production <span class="count" id="countInProduction">0</span>
+        </button>
+        <button class="filter-pill" data-status="done">
+          Done <span class="count" id="countDone">0</span>
+        </button>
+      </div>
+
+      <!-- Search & Sorting Controls -->
+      <div class="search-and-sort">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search ideas, hooks, formats...">
+        </div>
+
+        <div class="dropdown-group">
+          <select id="nicheSelect" class="filter-select" aria-label="Filter by Niche">
+            <option value="all">All Niches</option>
+          </select>
+
+          <select id="sortSelect" class="filter-select" aria-label="Sort Order">
+            <option value="newest">Sort: Newest First</option>
+            <option value="views_desc">Sort: Highest Projected Views</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend Ideas Cards List -->
+    <main id="cardsList" class="cards-container">
+      <!-- Cards dynamically rendered here -->
+    </main>
+
+  </div>
+
+  <!-- Quick Pick Modal (Sasha / Ima) -->
+  <div id="pickModalOverlay" class="pick-modal-overlay">
+    <div class="pick-modal">
+      <div class="pick-modal-title">Who is picking this idea?</div>
+      <div class="pick-modal-subtitle" id="pickModalIdeaTitle">Select owner to claim ownership and move to Picked</div>
+      <div class="pick-options">
+        <button type="button" class="btn-persona" id="pickSashaBtn">
+          <div class="persona-avatar avatar-sasha">S</div>
+          <span>Sasha</span>
+        </button>
+        <button type="button" class="btn-persona" id="pickImaBtn">
+          <div class="persona-avatar avatar-ima">I</div>
+          <span>Ima</span>
+        </button>
+      </div>
+      <button type="button" id="closePickModalBtn" class="btn btn-secondary btn-sm" style="width: 100%;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Application Logic & Firebase Integration -->
+  <script type="module">
+    /**
+     * =========================================================================
+     * FIRESTORE DATA SCHEMA DOCUMENTATION
+     * Collection: "trendIdeas"
+     * 
+     * FIELD              TYPE             DESCRIPTION
+     * -----------------  ---------------  -------------------------------------
+     * id                 string           Document ID (auto-generated by Firestore)
+     * title              string           Headline or name of the trend concept
+     * format             string           Execution format (e.g. "organic vs lab float test")
+     * niche              string           Genre/vertical (e.g. "Health", "Comedy", "Drama")
+     * description        string           Short 1-2 sentence concept summary & payoff
+     * hook               string           Opening line/visual in the first 2 seconds
+     * dialogueOutline    string           Rough dialogue, script beats, or progression
+     * characters         string           Personas/talent needed for filming
+     * cameraNotes        string           Camera angles, framing, lighting, or shot list
+     * backgroundSetting  string           Location, set design, or backdrop requirements
+     * estimatedViews     number           Projected view potential / viral score
+     * status             string           "pending" | "picked" | "in_production" | "done"
+     * pickedBy           string | null    "Sasha" or "Ima" (set when idea is claimed)
+     * createdAt          Timestamp        Firestore server timestamp of creation
+     * =========================================================================
+     */
+
+    // =========================================================================
+    // FIREBASE CONFIGURATION PLACEHOLDER
+    // Replace with your real Firebase Project credentials from Firebase Console:
+    // Project Settings -> General -> Your apps -> SDK setup and configuration.
+    // =========================================================================
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Firebase imports (Modular SDK v9+)
+    import { initializeApp } from "firebase/app";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      updateDoc, 
+      doc, 
+      onSnapshot, 
+      query, 
+      orderBy, 
+      serverTimestamp 
+    } from "firebase/firestore";
+
+    // Application State
+    let db = null;
+    let isLiveFirestore = false;
+    let ideas = [];
+    let currentFilterStatus = "all";
+    let currentNiche = "all";
+    let currentSearchTerm = "";
+    let currentSort = "newest";
+    let activePendingPickIdeaId = null;
+    const expandedCardIds = new Set();
+
+    // DOM Elements
+    const cardsListEl = document.getElementById("cardsList");
+    const statusBanner = document.getElementById("statusBanner");
+    const statusBannerText = document.getElementById("statusBannerText");
+    const newIdeaFormPanel = document.getElementById("newIdeaFormPanel");
+    const toggleFormBtn = document.getElementById("toggleFormBtn");
+    const toggleIcon = document.getElementById("toggleIcon");
+    const toggleText = document.getElementById("toggleText");
+    const closeFormBtn = document.getElementById("closeFormBtn");
+    const cancelFormBtn = document.getElementById("cancelFormBtn");
+    const addIdeaForm = document.getElementById("addIdeaForm");
+    const statusFilterTabs = document.getElementById("statusFilterTabs");
+    const searchInput = document.getElementById("searchInput");
+    const nicheSelect = document.getElementById("nicheSelect");
+    const sortSelect = document.getElementById("sortSelect");
+    const pickModalOverlay = document.getElementById("pickModalOverlay");
+    const pickModalIdeaTitle = document.getElementById("pickModalIdeaTitle");
+    const pickSashaBtn = document.getElementById("pickSashaBtn");
+    const pickImaBtn = document.getElementById("pickImaBtn");
+    const closePickModalBtn = document.getElementById("closePickModalBtn");
+
+    // Sample Starter Data (Used in preview mode or initial demonstration)
+    const SEED_IDEAS = [
+      {
+        id: "demo-1",
+        title: "Organic vs Lab Float Test",
+        format: "organic vs lab float test",
+        niche: "Health",
+        description: "Testing supermarket cold-pressed olive oils vs cheap synthetic blends in salted ice water to expose cloudy chemical additives live on camera.",
+        hook: "Stop buying grocery store olive oil until you see what happens when I drop it in this salted ice water.",
+        dialogueOutline: "Beat 1: Pour both samples into identical clear cylinders side-by-side.\nBeat 2: The 'certified organic' immediately crystallizes while the store brand separates into yellow foam.\nBeat 3: Read the microscopic pesticide loophole on the store brand back label.\nBeat 4: Drop the exact test you can do at home in 30 seconds.",
+        characters: "Investigative host + deadpan chemistry assistant",
+        cameraNotes: "Macro 50mm on oil drops, extreme close-up on crystal formation, clean overhead lighting",
+        backgroundSetting: "Matte black kitchen island with stainless lab test tubes",
+        estimatedViews: 1450000,
+        status: "pending",
+        pickedBy: null,
+        createdAt: new Date(Date.now() - 3600000 * 2)
+      },
+      {
+        id: "demo-2",
+        title: "Situationship 'Friend' Phone Handover Drama",
+        format: "situationship drama",
+        niche: "Comedy",
+        description: "Girl asks her situationship to hold her unlocked phone while she ties her shoe, then watches his heart rate monitor spike in real time.",
+        hook: "I handed him my unlocked phone for 4 seconds and his Apple Watch registered an irregular cardiac event.",
+        dialogueOutline: "Beat 1: 'Can you hold this? My sneaker came undone.'\nBeat 2: Phone buzzes with notification from 'Alex (Dermatologist) 🍆'.\nBeat 3: Guy does impossible gymnastic finger moves trying not to look while staring straight into the camera.\nBeat 4: The reveal: it's a doctor reminder for sunscreen, but his guilty sweat says everything.",
+        characters: "Casual girlfriend + sweating situationship boyfriend",
+        cameraNotes: "POV angle from girlfriend tying shoe, quick zoom cut to his frantic facial twitch",
+        backgroundSetting: "Coffee shop sidewalk patio on a sunny afternoon",
+        estimatedViews: 2200000,
+        status: "picked",
+        pickedBy: "Sasha",
+        createdAt: new Date(Date.now() - 3600000 * 6)
+      },
+      {
+        id: "demo-3",
+        title: "Rich CEO Disguised As Intern Reveal",
+        format: "rich CEO reveal",
+        niche: "Drama",
+        description: "New intern gets yelled at by mid-level manager for using high-end stationery, then quietly pulls out the deed to the building.",
+        hook: "He told me interns don't deserve the ergonomic chair. Then he noticed my signature on his employment contract.",
+        dialogueOutline: "Beat 1: Manager mocks the intern for taking notes with a vintage fountain pen.\nBeat 2: Manager threatens to dock his bonus before realizing interns don't have bonuses.\nBeat 3: Board members walk in with coffee and greet the intern as 'Mr. Hastings'.\nBeat 4: Cold stare into camera with silent paper shuffle.",
+        characters: "Arrogant floor manager + unassuming quiet CEO intern + 2 stunned board members",
+        cameraNotes: "Low angle power dynamic shot, slow zoom on the pen engraving, dramatic silence",
+        backgroundSetting: "High-floor glass boardroom overlooking city skyline",
+        estimatedViews: 3800000,
+        status: "in_production",
+        pickedBy: "Ima",
+        createdAt: new Date(Date.now() - 3600000 * 24)
+      }
+    ];
+
+    /**
+     * INITIALIZE APP & FIREBASE
+     */
+    async function init() {
+      setupEventListeners();
+      
+      const isPlaceholder = !firebaseConfig.projectId || 
+                            firebaseConfig.projectId === "YOUR_PROJECT_ID" || 
+                            firebaseConfig.apiKey === "YOUR_API_KEY";
+
+      if (isPlaceholder) {
+        console.log("Firebase config contains placeholders. Initializing in interactive Demo Mode.");
+        initDemoStore();
+      } else {
+        try {
+          const app = initializeApp(firebaseConfig);
+          db = getFirestore(app);
+          isLiveFirestore = true;
+          
+          showStatusBanner("Connected to live Firestore. Real-time sync is active for Sasha & Ima!", false);
+          listenToFirestore();
+        } catch (err) {
+          console.error("Firestore initialization failed:", err);
+          showStatusBanner("Firebase error: " + err.message + " — switched to Local Mock Store.", true);
+          initDemoStore();
+        }
+      }
+    }
+
+    /**
+     * Display status banner at the top
+     */
+    function showStatusBanner(message, isAlert) {
+      statusBanner.style.display = "flex";
+      statusBanner.className = "banner" + (isAlert ? " alert" : "");
+      statusBannerText.innerHTML = message;
+    }
+
+    /**
+     * Set up real-time listener to Firestore
+     */
+    function listenToFirestore() {
+      try {
+        const ideasCol = collection(db, "trendIdeas");
+        const ideasQuery = query(ideasCol, orderBy("createdAt", "desc"));
+
+        onSnapshot(ideasQuery, (snapshot) => {
+          const loadedIdeas = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            loadedIdeas.push({
+              id: docSnap.id,
+              ...data,
+              createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt)) : new Date()
+            });
+          });
+
+          ideas = loadedIdeas;
+          updateNicheDropdown();
+          updateCounts();
+          renderCards();
+        }, (err) => {
+          console.error("onSnapshot error:", err);
+          showStatusBanner("Real-time sync error: " + err.message, true);
+        });
+      } catch (err) {
+        console.error("Query setup error:", err);
+        showStatusBanner("Query error: " + err.message, true);
+      }
+    }
+
+    /**
+     * Fallback Demo Store with LocalStorage persistence & simulated onSnapshot
+     */
+    function initDemoStore() {
+      const saved = localStorage.getItem("sasha_ima_demo_ideas");
+      if (saved) {
+        try {
+          ideas = JSON.parse(saved);
+          ideas.forEach(i => {
+            if (i.createdAt) i.createdAt = new Date(i.createdAt);
+          });
+        } catch (e) {
+          ideas = [...SEED_IDEAS];
+        }
+      } else {
+        ideas = [...SEED_IDEAS];
+        localStorage.setItem("sasha_ima_demo_ideas", JSON.stringify(ideas));
+      }
+
+      showStatusBanner(
+        "⚡ <strong>Demo / Preview Mode</strong>: Paste your Firebase config into <code>index.html</code> to connect live Firestore. All actions (picks, status progression, adds) are active and persisted locally.",
+        false
+      );
+
+      updateNicheDropdown();
+      updateCounts();
+      renderCards();
+    }
+
+    function saveDemoState() {
+      localStorage.setItem("sasha_ima_demo_ideas", JSON.stringify(ideas));
+      updateNicheDropdown();
+      updateCounts();
+      renderCards();
+    }
+
+    /**
+     * EVENT LISTENERS SETUP
+     */
+    function setupEventListeners() {
+      // Toggle New Idea Panel
+      toggleFormBtn.addEventListener("click", toggleForm);
+      closeFormBtn.addEventListener("click", closeForm);
+      cancelFormBtn.addEventListener("click", closeForm);
+
+      // Form Submit
+      addIdeaForm.addEventListener("submit", handleFormSubmit);
+
+      // Status Filter Pills
+      statusFilterTabs.addEventListener("click", (e) => {
+        const pill = e.target.closest(".filter-pill");
+        if (!pill) return;
+        
+        document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        currentFilterStatus = pill.getAttribute("data-status");
+        renderCards();
+      });
+
+      // Search input with debounce
+      let searchTimeout;
+      searchInput.addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          currentSearchTerm = e.target.value.trim().toLowerCase();
+          renderCards();
+        }, 150);
+      });
+
+      // Niche filter select
+      nicheSelect.addEventListener("change", (e) => {
+        currentNiche = e.target.value;
+        renderCards();
+      });
+
+      // Sort select
+      sortSelect.addEventListener("change", (e) => {
+        currentSort = e.target.value;
+        renderCards();
+      });
+
+      // Pick Modal Actions
+      pickSashaBtn.addEventListener("click", () => confirmPick("Sasha"));
+      pickImaBtn.addEventListener("click", () => confirmPick("Ima"));
+      closePickModalBtn.addEventListener("click", closePickModal);
+      pickModalOverlay.addEventListener("click", (e) => {
+        if (e.target === pickModalOverlay) closePickModal();
+      });
+    }
+
+    /**
+     * FORM CONTROLS
+     */
+    function toggleForm() {
+      const isActive = newIdeaFormPanel.classList.toggle("active");
+      if (isActive) {
+        toggleIcon.textContent = "✕";
+        toggleText.textContent = "Cancel";
+        document.getElementById("titleInput").focus();
+      } else {
+        toggleIcon.textContent = "+";
+        toggleText.textContent = "New Trend Idea";
+      }
+    }
+
+    function closeForm() {
+      newIdeaFormPanel.classList.remove("active");
+      toggleIcon.textContent = "+";
+      toggleText.textContent = "New Trend Idea";
+      addIdeaForm.reset();
+    }
+
+    /**
+     * SUBMIT NEW IDEA
+     */
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById("titleInput").value.trim();
+      const niche = document.getElementById("nicheInput").value.trim();
+      const format = document.getElementById("formatInput").value.trim();
+      const description = document.getElementById("descriptionInput").value.trim();
+      const hook = document.getElementById("hookInput").value.trim();
+      const dialogueOutline = document.getElementById("dialogueOutlineInput").value.trim();
+      const characters = document.getElementById("charactersInput").value.trim();
+      const cameraNotes = document.getElementById("cameraNotesInput").value.trim();
+      const backgroundSetting = document.getElementById("backgroundSettingInput").value.trim();
+      const estimatedViewsVal = document.getElementById("estimatedViewsInput").value;
+      const estimatedViews = estimatedViewsVal ? Number(estimatedViewsVal) : 0;
+
+      if (!title || !niche || !format || !description || !hook) {
+        showToast("Please fill in all required fields.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submitIdeaBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Saving...";
+
+      const newIdeaData = {
+        title,
+        niche,
+        format,
+        description,
+        hook,
+        dialogueOutline,
+        characters,
+        cameraNotes,
+        backgroundSetting,
+        estimatedViews,
+        status: "pending",
+        pickedBy: null,
+        createdAt: isLiveFirestore ? serverTimestamp() : new Date()
+      };
+
+      try {
+        if (isLiveFirestore) {
+          await addDoc(collection(db, "trendIdeas"), newIdeaData);
+        } else {
+          const simulated = {
+            ...newIdeaData,
+            id: "idea-" + Date.now(),
+            createdAt: new Date()
+          };
+          ideas.unshift(simulated);
+          saveDemoState();
+        }
+
+        showToast("Trend idea created!");
+        closeForm();
+      } catch (err) {
+        console.error("Error creating idea:", err);
+        showToast("Failed to save idea: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Save Trend Idea";
+      }
+    }
+
+    /**
+     * PICKING AN IDEA
+     */
+    window.openPickModal = function(id) {
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+      activePendingPickIdeaId = id;
+      pickModalIdeaTitle.textContent = `"${idea.title}"`;
+      pickModalOverlay.classList.add("active");
+    };
+
+    function closePickModal() {
+      activePendingPickIdeaId = null;
+      pickModalOverlay.classList.remove("active");
+    }
+
+    async function confirmPick(persona) {
+      if (!activePendingPickIdeaId) return;
+      const id = activePendingPickIdeaId;
+      closePickModal();
+      await updateIdeaStatus(id, "picked", persona);
+      showToast(`Idea claimed by ${persona}!`);
+    }
+
+    /**
+     * UPDATE STATUS & OWNER IN FIRESTORE OR DEMO STORE
+     */
+    window.updateIdeaStatus = async function(id, newStatus, newPickedBy = undefined) {
+      try {
+        const updatePayload = { status: newStatus };
+        if (newPickedBy !== undefined) {
+          updatePayload.pickedBy = newPickedBy;
+        }
+
+        if (isLiveFirestore) {
+          const docRef = doc(db, "trendIdeas", id);
+          await updateDoc(docRef, updatePayload);
+        } else {
+          const idx = ideas.findIndex(i => i.id === id);
+          if (idx !== -1) {
+            ideas[idx].status = newStatus;
+            if (newPickedBy !== undefined) {
+              ideas[idx].pickedBy = newPickedBy;
+            }
+            saveDemoState();
+          }
+        }
+      } catch (err) {
+        console.error("Status update failed:", err);
+        showToast("Update failed: " + err.message);
+      }
+    };
+
+    /**
+     * QUICK PICK DIRECTLY FROM CARD
+     */
+    window.quickPick = async function(id, persona, event) {
+      if (event) event.stopPropagation();
+      await updateIdeaStatus(id, "picked", persona);
+      showToast(`Claimed by ${persona}!`);
+    };
+
+    /**
+     * TOGGLE EXPAND / COLLAPSE CARD
+     */
+    window.toggleCardExpand = function(id) {
+      if (expandedCardIds.has(id)) {
+        expandedCardIds.delete(id);
+      } else {
+        expandedCardIds.add(id);
+      }
+      renderCards();
+    };
+
+    /**
+     * COPY HOOK TO CLIPBOARD
+     */
+    window.copyHook = function(hookText, btnEl, event) {
+      if (event) event.stopPropagation();
+      navigator.clipboard.writeText(hookText).then(() => {
+        const orig = btnEl.textContent;
+        btnEl.textContent = "Copied! ✓";
+        btnEl.style.color = "#34d399";
+        setTimeout(() => {
+          btnEl.textContent = orig;
+          btnEl.style.color = "";
+        }, 1800);
+      }).catch(() => {
+        showToast("Hook copied!");
+      });
+    };
+
+    /**
+     * UPDATE NICHE DROPDOWN (Dynamically populated from data)
+     */
+    function updateNicheDropdown() {
+      const currentSelected = nicheSelect.value;
+      const niches = new Set();
+      
+      // Default common suggestions
+      ["Health", "Comedy", "Drama", "Tech", "Finance", "Beauty", "Lifestyle"].forEach(n => niches.add(n));
+      
+      ideas.forEach(i => {
+        if (i.niche && i.niche.trim()) {
+          niches.add(i.niche.trim());
+        }
+      });
+
+      const sortedNiches = Array.from(niches).sort();
+      let html = `<option value="all">All Niches (${ideas.length})</option>`;
+      
+      sortedNiches.forEach(n => {
+        const count = ideas.filter(i => (i.niche || "").toLowerCase() === n.toLowerCase()).length;
+        html += `<option value="${escapeHtml(n)}">${escapeHtml(n)} (${count})</option>`;
+      });
+
+      nicheSelect.innerHTML = html;
+      if (Array.from(niches).map(n => n.toLowerCase()).includes(currentSelected.toLowerCase()) || currentSelected === "all") {
+        nicheSelect.value = currentSelected;
+      }
+    }
+
+    /**
+     * UPDATE FILTER TAB COUNTS
+     */
+    function updateCounts() {
+      document.getElementById("countAll").textContent = ideas.length;
+      document.getElementById("countPending").textContent = ideas.filter(i => i.status === "pending").length;
+      document.getElementById("countPicked").textContent = ideas.filter(i => i.status === "picked").length;
+      document.getElementById("countInProduction").textContent = ideas.filter(i => i.status === "in_production").length;
+      document.getElementById("countDone").textContent = ideas.filter(i => i.status === "done").length;
+    }
+
+    /**
+     * RENDER CARDS LIST
+     */
+    function renderCards() {
+      // 1. Filter by Status
+      let filtered = ideas.filter(item => {
+        if (currentFilterStatus === "all") return true;
+        return item.status === currentFilterStatus;
+      });
+
+      // 2. Filter by Niche
+      if (currentNiche !== "all") {
+        filtered = filtered.filter(item => {
+          return (item.niche || "").toLowerCase() === currentNiche.toLowerCase();
+        });
+      }
+
+      // 3. Filter by Search Query
+      if (currentSearchTerm) {
+        filtered = filtered.filter(item => {
+          const matchTitle = (item.title || "").toLowerCase().includes(currentSearchTerm);
+          const matchDesc = (item.description || "").toLowerCase().includes(currentSearchTerm);
+          const matchHook = (item.hook || "").toLowerCase().includes(currentSearchTerm);
+          const matchFormat = (item.format || "").toLowerCase().includes(currentSearchTerm);
+          const matchNiche = (item.niche || "").toLowerCase().includes(currentSearchTerm);
+          const matchPicked = (item.pickedBy || "").toLowerCase().includes(currentSearchTerm);
+          return matchTitle || matchDesc || matchHook || matchFormat || matchNiche || matchPicked;
+        });
+      }
+
+      // 4. Sort
+      filtered.sort((a, b) => {
+        if (currentSort === "views_desc") {
+          return (b.estimatedViews || 0) - (a.estimatedViews || 0);
+        }
+        // Default newest first
+        const timeA = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt || 0).getTime();
+        const timeB = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt || 0).getTime();
+        return timeB - timeA;
+      });
+
+      // Render Empty State if no items
+      if (filtered.length === 0) {
+        cardsListEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💡</div>
+            <div class="empty-state-title">No Trend Ideas Found</div>
+            <div class="empty-state-desc">
+              ${ideas.length === 0 
+                ? "No trend concepts have been added yet. Click '+ New Trend Idea' to log the first one!" 
+                : "No ideas match your current filter or search criteria."}
+            </div>
+            ${ideas.length === 0 
+              ? `<button class="btn btn-primary" onclick="document.getElementById('toggleFormBtn').click()">+ Create First Idea</button>` 
+              : `<button class="btn btn-secondary btn-sm" onclick="resetFilters()">Clear Filters</button>`}
+          </div>
+        `;
+        return;
+      }
+
+      // Render list of cards
+      cardsListEl.innerHTML = filtered.map(idea => renderCard(idea)).join("");
+    }
+
+    /**
+     * RENDER A SINGLE CARD
+     */
+    function renderCard(idea) {
+      const isExpanded = expandedCardIds.has(idea.id);
+      const formattedViews = formatViews(idea.estimatedViews);
+      const formattedDate = formatDate(idea.createdAt);
+      const safeId = escapeHtml(idea.id);
+
+      // Status labels & badges
+      const statusLabels = {
+        pending: "Pending",
+        picked: "Picked",
+        in_production: "In Production",
+        done: "Done"
+      };
+      const statusBadge = `
+        <span class="status-badge status-${escapeHtml(idea.status)}">
+          ● ${statusLabels[idea.status] || idea.status}
+        </span>
+      `;
+
+      // Picked By pill
+      const pickedByPill = idea.pickedBy ? `
+        <span class="picked-by-pill">
+          👤 ${escapeHtml(idea.pickedBy)}
+        </span>
+      ` : "";
+
+      // Quick action controls depending on status
+      let actionButtons = "";
+      if (idea.status === "pending") {
+        actionButtons = `
+          <div class="pick-buttons-wrap" onclick="event.stopPropagation()">
+            <span class="pick-label">Pick as:</span>
+            <button class="btn-pick" onclick="quickPick('${safeId}', 'Sasha', event)">Sasha</button>
+            <button class="btn-pick" onclick="quickPick('${safeId}', 'Ima', event)">Ima</button>
+          </div>
+        `;
+      } else if (idea.status === "picked") {
+        actionButtons = `
+          <div class="action-group" onclick="event.stopPropagation()">
+            <button class="btn-status-advance btn-in_production" onclick="updateIdeaStatus('${safeId}', 'in_production')">
+              🎬 Move to In Production
+            </button>
+            <button class="btn-status-advance btn-mark-done" onclick="updateIdeaStatus('${safeId}', 'done')">
+              ✓ Mark Done
+            </button>
+            <button class="btn btn-revert" onclick="updateIdeaStatus('${safeId}', 'pending', null)">
+              Revert
+            </button>
+          </div>
+        `;
+      } else if (idea.status === "in_production") {
+        actionButtons = `
+          <div class="action-group" onclick="event.stopPropagation()">
+            <button class="btn-status-advance btn-mark-done" onclick="updateIdeaStatus('${safeId}', 'done')">
+              ✓ Mark Done
+            </button>
+            <button class="btn-revert" onclick="updateIdeaStatus('${safeId}', 'picked')">
+              Back to Picked
+            </button>
+          </div>
+        `;
+      } else if (idea.status === "done") {
+        actionButtons = `
+          <div class="action-group" onclick="event.stopPropagation()">
+            <span style="font-size: 12px; color: #34d399; font-weight: 600;">✨ Completed</span>
+            <button class="btn btn-revert" onclick="updateIdeaStatus('${safeId}', 'in_production')">
+              Reopen
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <article class="idea-card ${isExpanded ? 'is-expanded' : ''}" id="card-${safeId}">
+          <!-- Collapsed Card Header -->
+          <div class="card-header" onclick="toggleCardExpand('${safeId}')">
+            <div class="card-topline">
+              <div class="tags-cluster">
+                ${statusBadge}
+                ${pickedByPill}
+                ${idea.niche ? `<span class="tag-pill tag-niche">${escapeHtml(idea.niche)}</span>` : ''}
+                ${idea.format ? `<span class="tag-pill">${escapeHtml(idea.format)}</span>` : ''}
+                ${idea.estimatedViews ? `<span class="tag-pill tag-views">🔥 ${formattedViews} est.</span>` : ''}
+              </div>
+              <div class="expand-indicator">▼</div>
+            </div>
+
+            <div class="card-title-row">
+              <h2 class="card-title">${escapeHtml(idea.title)}</h2>
+            </div>
+
+            ${idea.description ? `<p class="card-summary-desc">${escapeHtml(idea.description)}</p>` : ''}
+
+            <!-- Quick Action Toolbar -->
+            <div class="card-quick-actions" onclick="event.stopPropagation()">
+              <div class="action-group">
+                ${actionButtons}
+              </div>
+              <span class="timestamp-text">${formattedDate}</span>
+            </div>
+          </div>
+
+          <!-- Expanded View Details -->
+          <div class="card-body">
+            <!-- 2-Second Hook Highlight -->
+            <div class="hook-callout">
+              <div class="hook-header">
+                <span class="hook-badge">⚡ First 2-Second Hook</span>
+                <button class="btn-copy" onclick="copyHook('${escapeJsString(idea.hook || '')}', this, event)">Copy Hook</button>
+              </div>
+              <div class="hook-content">"${escapeHtml(idea.hook || 'No hook provided.')}"</div>
+            </div>
+
+            <!-- Dialogue / Script Beats -->
+            ${idea.dialogueOutline ? `
+              <div class="detail-section">
+                <div class="detail-heading">🎬 Dialogue Outline & Script Beats</div>
+                <div class="detail-box">${escapeHtml(idea.dialogueOutline)}</div>
+              </div>
+            ` : ''}
+
+            <!-- Production Specifications Grid -->
+            <div class="detail-grid">
+              <div class="mini-spec">
+                <div class="mini-spec-label">Characters & Personas</div>
+                <div class="mini-spec-val">${escapeHtml(idea.characters || 'None specified')}</div>
+              </div>
+              <div class="mini-spec">
+                <div class="mini-spec-label">Camera Notes & Angles</div>
+                <div class="mini-spec-val">${escapeHtml(idea.cameraNotes || 'Standard framing')}</div>
+              </div>
+              <div class="mini-spec">
+                <div class="mini-spec-label">Background & Setting</div>
+                <div class="mini-spec-val">${escapeHtml(idea.backgroundSetting || 'Studio / flexible')}</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    /**
+     * RESET ALL FILTERS
+     */
+    window.resetFilters = function() {
+      currentFilterStatus = "all";
+      currentNiche = "all";
+      currentSearchTerm = "";
+      searchInput.value = "";
+      nicheSelect.value = "all";
+      document.querySelectorAll(".filter-pill").forEach(p => {
+        p.classList.toggle("active", p.getAttribute("data-status") === "all");
+      });
+      renderCards();
+    };
+
+    /**
+     * FORMATTERS & UTILITIES
+     */
+    function formatViews(num) {
+      if (!num || isNaN(num)) return "0";
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+      }
+      if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+      }
+      return num.toLocaleString();
+    }
+
+    function formatDate(dateObj) {
+      if (!dateObj) return "";
+      const date = dateObj instanceof Date ? dateObj : new Date(dateObj);
+      if (isNaN(date.getTime())) return "";
+
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return "Just now";
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays === 1) return "Yesterday";
+      if (diffDays < 7) return `${diffDays}d ago`;
+
+      return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeJsString(str) {
+      if (!str) return "";
+      return str
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "");
+    }
+
+    function showToast(message) {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(8px)";
+        toast.style.transition = "all 0.2s ease";
+        setTimeout(() => toast.remove(), 200);
+      }, 2500);
+    }
+
+    // Start App
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
