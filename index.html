@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIA / IMA — Trend Picker</title>
-  <meta name="description" content="Trend intelligence dashboard for Mia & Ima to track, curate, and produce viral trend ideas in real time with Gemini voice intelligence.">
-  <meta property="og:title" content="MIA / IMA — Trend Picker">
-  <meta property="og:description" content="Trend intelligence dashboard for Mia & Ima to track, curate, and produce viral trend ideas in real time with Gemini voice intelligence.">
+  <title>MAI / IMA — Trend Picker</title>
+  <meta name="description" content="Trend intelligence dashboard for MAI / IMA to track, curate, and produce viral trend ideas in real time with Mia AI voice intelligence.">
+  <meta property="og:title" content="MAI / IMA — Trend Picker">
+  <meta property="og:description" content="Trend intelligence dashboard for MAI / IMA to track, curate, and produce viral trend ideas in real time with Mia AI voice intelligence.">
   <meta property="og:type" content="website">
 
   <!-- Inter & JetBrains Mono Fonts -->
@@ -1941,11 +1941,11 @@
 
   <div class="app-container">
 
-    <!-- Top Header & Branding (Mia / Ima) -->
+    <!-- Top Header & Branding (MAI / IMA) -->
     <header class="header">
       <div class="brand-wrap">
         <div class="wordmark">
-          <span class="name-mia">MIA</span>
+          <span class="name-mia">MAI</span>
           <span class="slash">/</span>
           <span class="name-ima">IMA</span>
           <span class="pill-tag">TREND PICKER</span>
@@ -2245,17 +2245,17 @@
     </div>
   </div>
 
-  <!-- Mai's Adaptive Memory & Learned Style Modal -->
+  <!-- Mia's Adaptive Memory & Learned Style Modal -->
   <div id="memoryModalOverlay" class="pick-modal-overlay">
     <div class="pick-modal" style="max-width: 500px; text-align: left;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <div class="pick-modal-title" style="display: flex; align-items: center; gap: 8px;">
-          <span>🧠</span> Mai's Learned Memory
+          <span>🧠</span> Mia's Learned Memory
         </div>
         <button id="closeMemoryModalBtn" class="btn-chat-close">✕</button>
       </div>
       <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
-        Mai continuously learns how you and Mia create, your preferred hooks, tone, and viral formats to deliver smarter scripts and answers over time.
+        Mia continuously learns how you create, your preferred hooks, tone, and viral formats to deliver smarter scripts and answers over time.
       </p>
 
       <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--accent-cyan); margin-bottom: 8px;">
@@ -2266,8 +2266,8 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-        <input type="text" id="newMemoryInput" class="form-input" placeholder="Teach Mai a rule (e.g. 'Keep hooks under 10 words')..." style="font-size: 12px; padding: 8px 10px;">
-        <button type="button" id="btnAddMemory" class="btn btn-primary btn-sm" style="white-space: nowrap;">+ Teach Mai</button>
+        <input type="text" id="newMemoryInput" class="form-input" placeholder="Teach Mia a rule (e.g. 'Keep hooks under 10 words')..." style="font-size: 12px; padding: 8px 10px;">
+        <button type="button" id="btnAddMemory" class="btn btn-primary btn-sm" style="white-space: nowrap;">+ Teach Mia</button>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2280,24 +2280,24 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Round Floating Chat Button (Mai Voice Intelligence) -->
-  <button id="geminiChatToggleBtn" class="chat-floating-btn" aria-label="Open Mai Voice Intelligence Chat" title="Mai — Creative & Dev Partner (Drag to move, click to talk)">
+  <!-- Round Floating Chat Button (Mia Voice Intelligence) -->
+  <button id="geminiChatToggleBtn" class="chat-floating-btn" aria-label="Open Mia Voice Intelligence Chat" title="Mia — Creative & Dev Partner (Drag to move, click to talk)">
     <div class="pulse-ring"></div>
     <span class="icon-sparkle">✨</span>
   </button>
 
-  <!-- Mai Voice Intelligence Chat Panel -->
-  <aside id="geminiChatPanel" class="gemini-chat-panel" aria-label="Mai Voice Copilot">
+  <!-- Mia Voice Intelligence Chat Panel -->
+  <aside id="geminiChatPanel" class="gemini-chat-panel" aria-label="Mia Voice Copilot">
     <div class="chat-header">
       <div class="chat-header-title">
         <div class="ai-badge-circle">✨</div>
         <div class="chat-header-text">
-          <h3>Mai</h3>
+          <h3>Mia</h3>
           <p>Creative & Dev Partner • Adapts to You</p>
         </div>
       </div>
       <div class="chat-controls">
-        <button id="btnLiveTalk" class="btn-voice-toggle" title="Live Voice Conversation (Mai hears and replies back verbally)">
+        <button id="btnLiveTalk" class="btn-voice-toggle" title="Live Voice Conversation (Mia hears and replies back verbally)">
           <span>🎙️</span>
           <span id="liveTalkText">Live Talk</span>
         </button>
@@ -2312,7 +2312,7 @@
     <!-- Adaptive Intelligence Memory Status Strip -->
     <div class="chat-adaptive-status">
       <span>🧠 Adaptive Intelligence: <strong style="color: #c7d2fe;">Active & Learning</strong></span>
-      <span id="btnViewMemory" class="adaptive-tag" title="Click to view what Mai learned">Learned Style ↗</span>
+      <span id="btnViewMemory" class="adaptive-tag" title="Click to view what Mia learned">Learned Style ↗</span>
     </div>
 
     <!-- Active Speaking Audio Visualizer Wave -->
@@ -2321,24 +2321,24 @@
       <div class="wave-bar"></div>
       <div class="wave-bar"></div>
       <div class="wave-bar"></div>
-      <span style="margin-left: 6px;">Mai is speaking...</span>
+      <span style="margin-left: 6px;">Mia is speaking...</span>
       <button id="stopVoiceBtn" class="btn-msg-audio" style="margin-left: auto;">Stop ⏹️</button>
     </div>
 
     <!-- Live Hearing/Listening Visualizer Banner -->
     <div id="voiceListeningBanner" class="voice-listening-banner">
       <span>🟢</span>
-      <span>Mai is hearing you... speak naturally to talk</span>
+      <span>Mia is hearing you... speak naturally to talk</span>
       <button id="cancelListenBtn" class="btn-msg-audio" style="margin-left: auto; padding: 2px 6px;">Mute Mic ⏹️</button>
     </div>
 
     <!-- Chat Messages Scroll Area -->
     <div id="chatMessages" class="chat-messages">
       <div class="chat-msg assistant">
-        <span class="msg-sender">✨ Mai</span>
-        <div class="msg-bubble">Hey Mia & Ima! 👋 I'm Mai, your creative development partner. I'm listening, learning your style, and ready to bounce hooks, scripts, and code together. What are we brainstorming today?</div>
+        <span class="msg-sender">✨ Mia</span>
+        <div class="msg-bubble">Hey! 👋 I'm Mia, your creative development partner. I'm listening, learning your style, and ready to bounce hooks, scripts, and code together. What are we brainstorming today?</div>
         <div class="msg-actions">
-          <button class="btn-msg-audio" onclick="speakText('Hey Mia and Ima! I am Mai, your creative development partner. What are we brainstorming today?')">🔊 Listen</button>
+          <button class="btn-msg-audio" onclick="speakText('Hey! I am Mia, your creative development partner. What are we brainstorming today?')">🔊 Listen</button>
         </div>
       </div>
     </div>
@@ -2348,13 +2348,13 @@
       <button class="chip-btn" data-prompt="Punch up a 2-second viral hook for an organic vs lab food test">⚡ Hook Ideas</button>
       <button class="chip-btn" data-prompt="Give me 3 viral camera angles for high retention TikToks">🎬 Camera Angles</button>
       <button class="chip-btn" data-prompt="Outline dialogue beats for a rich CEO reveal format">🎭 Script Outline</button>
-      <button class="chip-btn" id="chipMemoryNotes">🧠 What Mai Learned</button>
+      <button class="chip-btn" id="chipMemoryNotes">🧠 What Mia Learned</button>
     </div>
 
     <!-- Chat Input Area -->
     <div class="chat-input-wrap">
       <button id="micBtn" class="btn-mic" title="Speak with microphone">🎤</button>
-      <textarea id="chatInput" class="chat-textarea" placeholder="Talk with Mai (or speak aloud)..." rows="1"></textarea>
+      <textarea id="chatInput" class="chat-textarea" placeholder="Talk with Mia (or speak aloud)..." rows="1"></textarea>
       <button id="chatSendBtn" class="btn-chat-send" title="Send message">➔</button>
     </div>
   </aside>
@@ -3606,7 +3606,7 @@ ${idea.dialogueOutline || 'N/A'}`;
           toggleVoiceSpeechBtn.classList.add("voice-active");
           voiceToggleIcon.textContent = "🔊";
           voiceToggleText.textContent = "Voice On";
-          showToast("Mai voice narration enabled");
+          showToast("Mia voice narration enabled");
           speakText("Voice enabled! I'm ready to brainstorm with you.");
         } else {
           toggleVoiceSpeechBtn.classList.remove("voice-active");
@@ -3618,7 +3618,7 @@ ${idea.dialogueOutline || 'N/A'}`;
             btnLiveTalk.classList.remove("live-talk-active");
             liveTalkText.textContent = "Live Talk";
           }
-          showToast("Mai voice muted");
+          showToast("Mia voice muted");
         }
       });
 
@@ -3632,7 +3632,7 @@ ${idea.dialogueOutline || 'N/A'}`;
           voiceToggleText.textContent = "Voice On";
           btnLiveTalk.classList.add("live-talk-active");
           liveTalkText.textContent = "Live Talk On";
-          showToast("Live Voice Talk with Mai active! Speak to her.");
+          showToast("Live Voice Talk with Mia active! Speak to her.");
           
           if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
             speakText("Live talk active. I'm listening!");
@@ -3680,15 +3680,15 @@ ${idea.dialogueOutline || 'N/A'}`;
           addMemoryInsight(val);
           newMemoryInput.value = "";
           renderMemoryList();
-          showToast("Mai learned new rule! ✨");
+          showToast("Mia learned new rule! ✨");
         }
       });
 
       btnResetMemory.addEventListener("click", () => {
-        if (confirm("Reset Mai's learned memory back to default?")) {
-          localStorage.removeItem("mai_adaptive_memory");
+        if (confirm("Reset Mia's learned memory back to default?")) {
+          localStorage.removeItem("mia_adaptive_memory");
           renderMemoryList();
-          showToast("Mai's memory reset to defaults.");
+          showToast("Mia's memory reset to defaults.");
         }
       });
 
@@ -3852,9 +3852,9 @@ ${idea.dialogueOutline || 'N/A'}`;
         chatInput.focus();
         alignChatPanelToButton();
 
-        // Mai speaks once clicked on to open!
+        // Mia speaks once clicked on to open!
         if (autoVoiceEnabled) {
-          speakText("Hey Mia and Ima! I'm Mai. What are we brainstorming today?");
+          speakText("Hey! I'm Mia, your creative development partner. What are we brainstorming today?");
         }
       } else {
         stopSpeaking();
@@ -3965,7 +3965,7 @@ ${idea.dialogueOutline || 'N/A'}`;
     }
 
     /**
-     * Send user chat message to Mai backend API (/api/chat)
+     * Send user chat message to Mia backend API (/api/chat)
      */
     async function sendUserChatMessage() {
       const text = chatInput.value.trim();
@@ -3978,7 +3978,7 @@ ${idea.dialogueOutline || 'N/A'}`;
       const lower = text.toLowerCase();
       if (lower.startsWith("i prefer") || lower.startsWith("we prefer") || lower.startsWith("we like") || lower.includes("always make sure") || lower.includes("remember that") || lower.includes("our style is") || lower.includes("focus on")) {
         addMemoryInsight(text);
-        showToast("Mai learned your creative style! 🧠");
+        showToast("Mia learned your creative style! 🧠");
       }
 
       // Add user message to UI
@@ -4017,7 +4017,7 @@ ${idea.dialogueOutline || 'N/A'}`;
         }
 
       } catch (err) {
-        console.error("Mai Chat Error:", err);
+        console.error("Mia Chat Error:", err);
         loadingMsgEl.remove();
         appendChatMessage("assistant", "⚠️ Sorry, I ran into an issue communicating with Gemini: " + err.message + ". Please verify GEMINI_API_KEY in the server environment.");
       } finally {
@@ -4032,7 +4032,7 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       const senderSpan = document.createElement("span");
       senderSpan.className = "msg-sender";
-      senderSpan.textContent = role === "user" ? "👤 Mia / Ima" : "✨ Mai";
+      senderSpan.textContent = role === "user" ? "👤 Ima" : "✨ Mia";
 
       const bubbleDiv = document.createElement("div");
       bubbleDiv.className = "msg-bubble";
@@ -4073,7 +4073,7 @@ ${idea.dialogueOutline || 'N/A'}`;
       const msgDiv = document.createElement("div");
       msgDiv.className = "chat-msg assistant";
       msgDiv.innerHTML = `
-        <span class="msg-sender">✨ Mai is thinking...</span>
+        <span class="msg-sender">✨ Mia is thinking...</span>
         <div class="msg-bubble" style="color: var(--text-muted); font-style: italic;">
           Analyzing trend intelligence & formulating response...
         </div>
@@ -4087,7 +4087,8 @@ ${idea.dialogueOutline || 'N/A'}`;
      * ADAPTIVE INTELLIGENCE MEMORY HELPERS
      */
     const DEFAULT_ADAPTIVE_MEMORY = [
-      "Creative Partners: Mia & Ima (collaborative creators & developers).",
+      "Platform: MAI / IMA (Trend Picker & Creative Studio).",
+      "Creative Copilot: Mia (director, developer, viral hook specialist).",
       "Core formats: Organic vs Lab Float Tests, Situationship POV drama, Rich CEO reveals, high-retention TikTok pacing.",
       "Hook Rule: Must create an intense curiosity gap or visual intrigue in the first 2 seconds.",
       "Tone: Punchy, witty, conversational, highly actionable, zero fluff."
@@ -4095,7 +4096,7 @@ ${idea.dialogueOutline || 'N/A'}`;
 
     function getAdaptiveMemory() {
       try {
-        const raw = localStorage.getItem("mai_adaptive_memory");
+        const raw = localStorage.getItem("mia_adaptive_memory");
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -4106,7 +4107,7 @@ ${idea.dialogueOutline || 'N/A'}`;
 
     function saveAdaptiveMemory(memArray) {
       try {
-        localStorage.setItem("mai_adaptive_memory", JSON.stringify(memArray));
+        localStorage.setItem("mia_adaptive_memory", JSON.stringify(memArray));
       } catch (e) {}
     }
 
@@ -4169,7 +4170,7 @@ ${idea.dialogueOutline || 'N/A'}`;
     }
 
     /**
-     * Speech Synthesis (Mai Female Voice Intelligence)
+     * Speech Synthesis (Mia Female Voice Intelligence)
      */
     function getFemaleVoice() {
       if (!window.speechSynthesis) return null;
