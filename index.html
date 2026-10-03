@@ -3483,7 +3483,6 @@
               <div class="hook-header">
                 <span class="hook-badge">⚡ First 2-Second Hook</span>
                 <div style="display: flex; gap: 6px;">
-                  <button class="btn-copy" onclick="openPolishHookModal('${safeId}', event)">✨ Refine Hook</button>
                   <button class="btn-copy" onclick="copyHook('${escapeJsString(idea.hook || '')}', this, event)">Copy Hook</button>
                 </div>
               </div>
@@ -3530,7 +3529,6 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 8px;">
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button class="btn btn-secondary btn-sm" onclick="openTeleprompter('${safeId}', event)">📜 Teleprompter</button>
-                <button class="btn btn-secondary btn-sm" onclick="openPolishHookModal('${safeId}', event)">✨ Polish with Gemini</button>
                 <button class="btn btn-secondary btn-sm" onclick="copyProductionBrief('${safeId}', event)">📋 Copy Brief</button>
               </div>
               <div style="display: flex; gap: 8px;">
