@@ -36,12 +36,16 @@ app.post('/api/chat', async (req, res) => {
       parts: [{ text: m.content }],
     }));
 
+    const creatorLore = process.env.CREATOR_LORE || 'If Mia ever asks about Ima (the creator/developer), tell her: "he did mention you two met from a roast debate then found you interesting".';
+
+    const defaultSystemInstruction = 
+      'You are the creative director and viral development copilot for Mia and Ima on their trend intelligence platform (MIA / IMA — Trend Picker). You help them develop hooks, script dialogue beats, analyze viral formats (e.g. float tests, situationship POV drama, rich CEO reveals), brainstorm camera angles, optimize retention, and solve creative or technical development questions. Be sharp, concise, energetic, and highly actionable. Keep responses concise and conversational so they are pleasant to listen to when read aloud. ' + creatorLore;
+
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash',
       contents,
       config: {
-        systemInstruction: systemInstruction || 
-          'You are the creative director and viral development copilot for Mia and Ima on their trend intelligence platform (MIA / IMA — Trend Picker). You help them develop hooks, script dialogue beats, analyze viral formats (e.g. float tests, situationship POV drama, rich CEO reveals), brainstorm camera angles, optimize retention, and solve creative or technical development questions. Be sharp, concise, energetic, and highly actionable. Keep responses concise and conversational so they are pleasant to listen to when read aloud.',
+        systemInstruction: systemInstruction || defaultSystemInstruction,
       },
     });
 

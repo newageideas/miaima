@@ -1069,21 +1069,31 @@
       background: linear-gradient(135deg, #6366f1, #06b6d4);
       border: 2px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45), 0 0 0 1px rgba(56, 189, 248, 0.3);
-      cursor: pointer;
+      cursor: grab;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 900;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
       outline: none;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
-    .chat-floating-btn:hover {
+    .chat-floating-btn.is-dragging {
+      cursor: grabbing !important;
+      transform: scale(1.12) !important;
+      box-shadow: 0 16px 36px rgba(99, 102, 241, 0.7), 0 0 24px rgba(56, 189, 248, 0.8) !important;
+      transition: none !important;
+    }
+
+    .chat-floating-btn:hover:not(.is-dragging) {
       transform: scale(1.08) rotate(4deg);
       box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6), 0 0 20px rgba(56, 189, 248, 0.6);
     }
 
-    .chat-floating-btn:active {
+    .chat-floating-btn:active:not(.is-dragging) {
       transform: scale(0.95);
     }
 
@@ -1848,6 +1858,18 @@
       font-weight: 600;
       line-height: 1.45;
     }
+
+    /* Cosmic Hyperspace Galaxy Canvas */
+    .galaxy-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, #0b0e17 0%, #05070c 60%, #020306 100%);
+    }
   </style>
 
   <!-- Importmap for standard modular Firebase SDK v11+ from CDN -->
@@ -1861,6 +1883,9 @@
   </script>
 </head>
 <body>
+  <!-- Fullscreen Traveling Galaxy Background Canvas -->
+  <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
+
   <div class="app-container">
 
     <!-- Top Header & Branding (Mia / Ima) -->
@@ -1875,6 +1900,7 @@
         <div class="tagline">Trend intelligence, built together.</div>
       </div>
       <div class="header-actions">
+        <button id="btnToggleWarp" class="btn btn-secondary btn-sm" title="Toggle galaxy travel speed">🚀 Warp: Fast</button>
         <div class="view-toggle-wrap">
           <button id="viewFeedBtn" class="btn-view-mode active" title="Switch to Feed List View">📋 Feed</button>
           <button id="viewKanbanBtn" class="btn-view-mode" title="Switch to Pipeline Kanban Board">📊 Pipeline Board</button>
@@ -2437,6 +2463,7 @@ Ask me to punch up a 2-second hook, outline script beats, suggest camera angles,
      * INITIALIZE APP & FIREBASE
      */
     async function init() {
+      initGalaxyBackground();
       setupEventListeners();
       setupGeminiChat();
       
@@ -3457,15 +3484,8 @@ ${idea.dialogueOutline || 'N/A'}`;
      * =========================================================================
      */
     function setupGeminiChat() {
-      // Toggle chat panel open/close
-      geminiChatToggleBtn.addEventListener("click", () => {
-        const isOpen = geminiChatPanel.classList.toggle("active");
-        if (isOpen) {
-          chatInput.focus();
-        } else {
-          stopSpeaking();
-        }
-      });
+      // Make chat icon moveable (draggable with mouse or touch)
+      makeChatIconMovable();
 
       closeChatBtn.addEventListener("click", () => {
         geminiChatPanel.classList.remove("active");
@@ -3479,7 +3499,8 @@ ${idea.dialogueOutline || 'N/A'}`;
           toggleVoiceSpeechBtn.classList.add("voice-active");
           voiceToggleIcon.textContent = "🔊";
           voiceToggleText.textContent = "Voice On";
-          showToast("Gemini voice narration enabled");
+          showToast("Gemini female voice enabled");
+          speakText("Voice enabled! I'm ready to help you brainstorm.");
         } else {
           toggleVoiceSpeechBtn.classList.remove("voice-active");
           voiceToggleIcon.textContent = "🔇";
@@ -3510,6 +3531,173 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       // Speech Recognition (Microphone voice input)
       setupSpeechRecognition();
+
+      // Preload voices
+      if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          getFemaleVoice();
+        };
+      }
+    }
+
+    /**
+     * MAKE CHAT ICON MOVEABLE (DRAGGABLE)
+     */
+    function makeChatIconMovable() {
+      const btn = geminiChatToggleBtn;
+      let isDragging = false;
+      let hasMoved = false;
+      let startX, startY;
+      let initialLeft, initialTop;
+
+      const onStart = (clientX, clientY) => {
+        isDragging = true;
+        hasMoved = false;
+        startX = clientX;
+        startY = clientY;
+
+        const rect = btn.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+
+        btn.classList.add("is-dragging");
+      };
+
+      const onMove = (clientX, clientY) => {
+        if (!isDragging) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+          hasMoved = true;
+        }
+
+        if (hasMoved) {
+          let newLeft = initialLeft + dx;
+          let newTop = initialTop + dy;
+
+          const padding = 12;
+          const maxX = window.innerWidth - btn.offsetWidth - padding;
+          const maxY = window.innerHeight - btn.offsetHeight - padding;
+
+          newLeft = Math.max(padding, Math.min(newLeft, maxX));
+          newTop = Math.max(padding, Math.min(newTop, maxY));
+
+          btn.style.left = newLeft + "px";
+          btn.style.top = newTop + "px";
+          btn.style.right = "auto";
+          btn.style.bottom = "auto";
+        }
+      };
+
+      const onEnd = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        btn.classList.remove("is-dragging");
+        if (hasMoved) {
+          const rect = btn.getBoundingClientRect();
+          try {
+            localStorage.setItem("gemini_chat_btn_pos", JSON.stringify({ left: rect.left, top: rect.top }));
+          } catch (e) {}
+        }
+      };
+
+      // Mouse drag handlers
+      btn.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return;
+        onStart(e.clientX, e.clientY);
+
+        const mouseMoveHandler = (e) => onMove(e.clientX, e.clientY);
+        const mouseUpHandler = () => {
+          onEnd();
+          window.removeEventListener("mousemove", mouseMoveHandler);
+          window.removeEventListener("mouseup", mouseUpHandler);
+        };
+
+        window.addEventListener("mousemove", mouseMoveHandler);
+        window.addEventListener("mouseup", mouseUpHandler);
+      });
+
+      // Touch drag handlers (Mobile)
+      btn.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        onStart(touch.clientX, touch.clientY);
+      }, { passive: true });
+
+      window.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        onMove(touch.clientX, touch.clientY);
+      }, { passive: true });
+
+      window.addEventListener("touchend", () => {
+        onEnd();
+      });
+
+      // Click to toggle open (only if not dragged)
+      btn.addEventListener("click", (e) => {
+        if (hasMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        toggleChatWindow();
+      });
+
+      // Restore saved location if available
+      try {
+        const saved = localStorage.getItem("gemini_chat_btn_pos");
+        if (saved) {
+          const pos = JSON.parse(saved);
+          if (pos.left && pos.top && pos.left < window.innerWidth && pos.top < window.innerHeight) {
+            btn.style.left = pos.left + "px";
+            btn.style.top = pos.top + "px";
+            btn.style.right = "auto";
+            btn.style.bottom = "auto";
+          }
+        }
+      } catch (err) {}
+    }
+
+    /**
+     * TOGGLE CHAT WINDOW & SPEAK GREETING
+     */
+    function toggleChatWindow() {
+      const isOpen = geminiChatPanel.classList.toggle("active");
+      if (isOpen) {
+        chatInput.focus();
+        alignChatPanelToButton();
+
+        // Gemini speaks once clicked on to open!
+        if (autoVoiceEnabled) {
+          speakText("Hey Mia and Ima! I'm your Gemini copilot. What are we brainstorming today?");
+        }
+      } else {
+        stopSpeaking();
+      }
+    }
+
+    function alignChatPanelToButton() {
+      const btnRect = geminiChatToggleBtn.getBoundingClientRect();
+      const panelWidth = Math.min(390, window.innerWidth - 32);
+      const panelHeight = Math.min(610, window.innerHeight - 120);
+
+      if (btnRect.left < window.innerWidth / 2) {
+        geminiChatPanel.style.left = Math.max(16, btnRect.left) + "px";
+        geminiChatPanel.style.right = "auto";
+      } else {
+        geminiChatPanel.style.right = Math.max(16, window.innerWidth - btnRect.right) + "px";
+        geminiChatPanel.style.left = "auto";
+      }
+
+      if (btnRect.top < window.innerHeight / 2) {
+        geminiChatPanel.style.top = Math.min(window.innerHeight - panelHeight - 16, btnRect.bottom + 12) + "px";
+        geminiChatPanel.style.bottom = "auto";
+      } else {
+        geminiChatPanel.style.bottom = Math.max(16, window.innerHeight - btnRect.top + 12) + "px";
+        geminiChatPanel.style.top = "auto";
+      }
     }
 
     function setupSpeechRecognition() {
@@ -3686,8 +3874,48 @@ ${idea.dialogueOutline || 'N/A'}`;
     }
 
     /**
-     * Speech Synthesis (Gemini Voice intelligence)
+     * Speech Synthesis (Gemini Female Voice Intelligence)
      */
+    function getFemaleVoice() {
+      if (!window.speechSynthesis) return null;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return null;
+
+      // Prioritize natural sounding female English voices across operating systems
+      const femaleNames = [
+        "Google UK English Female",
+        "Google US English",
+        "Samantha",
+        "Victoria",
+        "Karen",
+        "Ava",
+        "Allison",
+        "Susan",
+        "Zira",
+        "Jenny",
+        "Aria",
+        "Fiona",
+        "Moira",
+        "Tessa",
+        "Veena"
+      ];
+
+      for (const name of femaleNames) {
+        const match = voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes(name.toLowerCase()));
+        if (match) return match;
+      }
+
+      // Check regex for female indicators in voice name
+      const regexMatch = voices.find(v => 
+        v.lang.startsWith("en") && 
+        /(female|woman|samantha|victoria|karen|ava|zira|jenny|aria|fiona|veena|sangeeta)/i.test(v.name)
+      );
+      if (regexMatch) return regexMatch;
+
+      // Fallback to first available English voice
+      return voices.find(v => v.lang.startsWith("en")) || voices[0];
+    }
+
     window.speakText = function(textToSpeak) {
       if (!window.speechSynthesis) {
         showToast("Voice speech is not supported in this browser.");
@@ -3696,20 +3924,19 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       window.speechSynthesis.cancel();
 
-      // Clean markdown stars/hashtags for cleaner speech
+      // Clean markdown stars/hashtags for smooth speech
       const cleaned = textToSpeak
-        .replace(/[*#_`~>]/g, "")
+        .replace(/[*#_`~>•]/g, "")
+        .replace(/https?:\/\/\S+/g, "")
         .replace(/\n+/g, ". ");
 
       const utterance = new SpeechSynthesisUtterance(cleaned);
-      utterance.rate = 1.05;
-      utterance.pitch = 1.0;
+      utterance.rate = 1.02; // Smooth conversational speed
+      utterance.pitch = 1.14; // Warm, energetic feminine tone
 
-      // Select natural sounding voice if available
-      const voices = window.speechSynthesis.getVoices();
-      const naturalVoice = voices.find(v => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Ava")));
-      if (naturalVoice) {
-        utterance.voice = naturalVoice;
+      const femaleVoice = getFemaleVoice();
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
       }
 
       utterance.onstart = () => {
@@ -3800,6 +4027,150 @@ ${idea.dialogueOutline || 'N/A'}`;
         toast.style.transition = "all 0.2s ease";
         setTimeout(() => toast.remove(), 200);
       }, 2500);
+    }
+
+    /**
+     * =========================================================================
+     * TRAVELING GALAXY HYPERSPACE ENGINE
+     * Fast 3D traveling stars, cosmic nebulae, and shooting warp dust
+     * =========================================================================
+     */
+    function initGalaxyBackground() {
+      const canvas = document.getElementById("galaxyCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let cx = width / 2;
+      let cy = height / 2;
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        cx = width / 2;
+        cy = height / 2;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const STAR_COUNT = 480;
+      let speed = 14; // High-velocity space travel
+      let isHyper = true;
+
+      // Color spectrum: luminous white, celestial cyan, electric blue, neon purple
+      const starColors = [
+        "rgba(255, 255, 255,",
+        "rgba(56, 189, 248,",
+        "rgba(99, 102, 241,",
+        "rgba(147, 197, 253,",
+        "rgba(192, 132, 252,"
+      ];
+
+      const stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: (Math.random() - 0.5) * width * 2.5,
+          y: (Math.random() - 0.5) * height * 2.5,
+          z: Math.random() * 1000 + 1,
+          prevZ: 1000,
+          color: starColors[Math.floor(Math.random() * starColors.length)],
+          size: Math.random() * 1.5 + 0.6
+        });
+      }
+
+      // Distant cosmic nebulae
+      const nebulae = [
+        { x: width * 0.2, y: height * 0.25, r: 380, color: "rgba(99, 102, 241, 0.08)" },
+        { x: width * 0.8, y: height * 0.7, r: 440, color: "rgba(56, 189, 248, 0.06)" },
+        { x: width * 0.5, y: height * 0.45, r: 320, color: "rgba(168, 85, 247, 0.06)" }
+      ];
+
+      // Toggle Warp Speed button in top navigation
+      const btnToggleWarp = document.getElementById("btnToggleWarp");
+      if (btnToggleWarp) {
+        btnToggleWarp.addEventListener("click", () => {
+          isHyper = !isHyper;
+          if (isHyper) {
+            speed = 16;
+            btnToggleWarp.textContent = "🚀 Warp: Fast";
+            btnToggleWarp.style.color = "#38bdf8";
+            btnToggleWarp.style.borderColor = "rgba(56, 189, 248, 0.4)";
+          } else {
+            speed = 4;
+            btnToggleWarp.textContent = "🚀 Warp: Cruise";
+            btnToggleWarp.style.color = "";
+            btnToggleWarp.style.borderColor = "";
+          }
+        });
+      }
+
+      function renderFrame() {
+        // Semi-transparent trailing background for high-speed motion blur
+        ctx.fillStyle = "rgba(8, 10, 16, 0.32)";
+        ctx.fillRect(0, 0, width, height);
+
+        // Soft ambient nebulae
+        nebulae.forEach(n => {
+          const grad = ctx.createRadialGradient(n.x, n.y, 10, n.x, n.y, n.r);
+          grad.addColorStop(0, n.color);
+          grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Warp stars
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          s.prevZ = s.z;
+          s.z -= speed;
+
+          if (s.z <= 0) {
+            s.z = 1000;
+            s.prevZ = 1000;
+            s.x = (Math.random() - 0.5) * width * 2.5;
+            s.y = (Math.random() - 0.5) * height * 2.5;
+          }
+
+          const k = 260 / s.z;
+          const px = cx + s.x * k;
+          const py = cy + s.y * k;
+
+          const prevK = 260 / s.prevZ;
+          const prevPx = cx + s.x * prevK;
+          const prevPy = cy + s.y * prevK;
+
+          if (px < -60 || px > width + 60 || py < -60 || py > height + 60) continue;
+
+          const alpha = Math.min(1, Math.max(0.12, (1 - s.z / 1000) * 1.5));
+          const strokeWidth = Math.max(1, (1 - s.z / 1000) * (s.size * 2.2));
+
+          // Draw warp streak
+          ctx.strokeStyle = s.color + alpha + ")";
+          ctx.lineWidth = strokeWidth;
+          ctx.beginPath();
+          ctx.moveTo(prevPx, prevPy);
+          ctx.lineTo(px, py);
+          ctx.stroke();
+
+          // Star nucleus
+          if (s.z < 650) {
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(px, py, strokeWidth * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(renderFrame);
+      }
+
+      requestAnimationFrame(renderFrame);
     }
 
     // Start App
