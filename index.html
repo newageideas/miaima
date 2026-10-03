@@ -1271,6 +1271,59 @@
       50% { transform: scaleY(1); }
     }
 
+    .voice-listening-banner {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(34, 197, 94, 0.12);
+      border-bottom: 1px solid rgba(34, 197, 94, 0.25);
+      font-size: 11px;
+      color: #4ade80;
+      font-weight: 600;
+      animation: pulseGreen 1.5s infinite;
+    }
+
+    .voice-listening-banner.active {
+      display: flex;
+    }
+
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+
+    .btn-voice-toggle.live-talk-active {
+      background: rgba(34, 197, 94, 0.25) !important;
+      border-color: rgba(34, 197, 94, 0.5) !important;
+      color: #4ade80 !important;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    }
+
+    .chat-adaptive-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 14px;
+      background: rgba(99, 102, 241, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .adaptive-tag {
+      color: #a78bfa;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .adaptive-tag:hover {
+      text-decoration: underline;
+    }
+
     /* Messages container */
     .chat-messages {
       flex: 1;
@@ -2192,26 +2245,62 @@
     </div>
   </div>
 
+  <!-- Mai's Adaptive Memory & Learned Style Modal -->
+  <div id="memoryModalOverlay" class="pick-modal-overlay">
+    <div class="pick-modal" style="max-width: 500px; text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div class="pick-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>🧠</span> Mai's Learned Memory
+        </div>
+        <button id="closeMemoryModalBtn" class="btn-chat-close">✕</button>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+        Mai continuously learns how you and Mia create, your preferred hooks, tone, and viral formats to deliver smarter scripts and answers over time.
+      </p>
+
+      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--accent-cyan); margin-bottom: 8px;">
+        Active Memory & Learned Style:
+      </div>
+      <div id="memoryListContainer" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+        <!-- Dynamically rendered list of memories -->
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <input type="text" id="newMemoryInput" class="form-input" placeholder="Teach Mai a rule (e.g. 'Keep hooks under 10 words')..." style="font-size: 12px; padding: 8px 10px;">
+        <button type="button" id="btnAddMemory" class="btn btn-primary btn-sm" style="white-space: nowrap;">+ Teach Mai</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" id="btnResetMemory" class="btn btn-secondary btn-sm" style="color: #f87171; border-color: rgba(239, 68, 68, 0.3);">Reset Default</button>
+        <button type="button" id="btnDoneMemory" class="btn btn-primary btn-sm">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Round Floating Chat Button (Gemini Voice Intelligence) -->
-  <button id="geminiChatToggleBtn" class="chat-floating-btn" aria-label="Open Gemini Voice Intelligence Chat">
+  <!-- Round Floating Chat Button (Mai Voice Intelligence) -->
+  <button id="geminiChatToggleBtn" class="chat-floating-btn" aria-label="Open Mai Voice Intelligence Chat" title="Mai — Creative & Dev Partner (Drag to move, click to talk)">
     <div class="pulse-ring"></div>
     <span class="icon-sparkle">✨</span>
   </button>
 
-  <!-- Gemini Voice Intelligence Chat Panel -->
-  <aside id="geminiChatPanel" class="gemini-chat-panel" aria-label="Gemini Voice Copilot">
+  <!-- Mai Voice Intelligence Chat Panel -->
+  <aside id="geminiChatPanel" class="gemini-chat-panel" aria-label="Mai Voice Copilot">
     <div class="chat-header">
       <div class="chat-header-title">
-        <div class="ai-badge-circle">🎙️</div>
+        <div class="ai-badge-circle">✨</div>
         <div class="chat-header-text">
-          <h3>Gemini Intelligence</h3>
-          <p>Mia / Ima Creative & Dev Copilot</p>
+          <h3>Mai</h3>
+          <p>Creative & Dev Partner • Adapts to You</p>
         </div>
       </div>
       <div class="chat-controls">
+        <button id="btnLiveTalk" class="btn-voice-toggle" title="Live Voice Conversation (Mai hears and replies back verbally)">
+          <span>🎙️</span>
+          <span id="liveTalkText">Live Talk</span>
+        </button>
         <button id="toggleVoiceSpeechBtn" class="btn-voice-toggle voice-active" title="Toggle voice narration">
           <span id="voiceToggleIcon">🔊</span>
           <span id="voiceToggleText">Voice On</span>
@@ -2220,25 +2309,36 @@
       </div>
     </div>
 
+    <!-- Adaptive Intelligence Memory Status Strip -->
+    <div class="chat-adaptive-status">
+      <span>🧠 Adaptive Intelligence: <strong style="color: #c7d2fe;">Active & Learning</strong></span>
+      <span id="btnViewMemory" class="adaptive-tag" title="Click to view what Mai learned">Learned Style ↗</span>
+    </div>
+
     <!-- Active Speaking Audio Visualizer Wave -->
     <div id="voiceSoundwave" class="voice-soundwave">
       <div class="wave-bar"></div>
       <div class="wave-bar"></div>
       <div class="wave-bar"></div>
       <div class="wave-bar"></div>
-      <span style="margin-left: 6px;">Gemini is speaking...</span>
+      <span style="margin-left: 6px;">Mai is speaking...</span>
       <button id="stopVoiceBtn" class="btn-msg-audio" style="margin-left: auto;">Stop ⏹️</button>
+    </div>
+
+    <!-- Live Hearing/Listening Visualizer Banner -->
+    <div id="voiceListeningBanner" class="voice-listening-banner">
+      <span>🟢</span>
+      <span>Mai is hearing you... speak naturally to talk</span>
+      <button id="cancelListenBtn" class="btn-msg-audio" style="margin-left: auto; padding: 2px 6px;">Mute Mic ⏹️</button>
     </div>
 
     <!-- Chat Messages Scroll Area -->
     <div id="chatMessages" class="chat-messages">
       <div class="chat-msg assistant">
-        <span class="msg-sender">✨ Gemini Copilot</span>
-        <div class="msg-bubble">Hey Mia & Ima! 👋 I'm your viral trend & development copilot.
-        
-Ask me to punch up a 2-second hook, outline script beats, suggest camera angles, or answer any development questions!</div>
+        <span class="msg-sender">✨ Mai</span>
+        <div class="msg-bubble">Hey Mia & Ima! 👋 I'm Mai, your creative development partner. I'm listening, learning your style, and ready to bounce hooks, scripts, and code together. What are we brainstorming today?</div>
         <div class="msg-actions">
-          <button class="btn-msg-audio" onclick="speakText('Hey Mia & Ima! I am your viral trend and development copilot. Ask me to punch up a 2-second hook, outline script beats, suggest camera angles, or answer any development questions!')">🔊 Listen</button>
+          <button class="btn-msg-audio" onclick="speakText('Hey Mia and Ima! I am Mai, your creative development partner. What are we brainstorming today?')">🔊 Listen</button>
         </div>
       </div>
     </div>
@@ -2248,13 +2348,13 @@ Ask me to punch up a 2-second hook, outline script beats, suggest camera angles,
       <button class="chip-btn" data-prompt="Punch up a 2-second viral hook for an organic vs lab food test">⚡ Hook Ideas</button>
       <button class="chip-btn" data-prompt="Give me 3 viral camera angles for high retention TikToks">🎬 Camera Angles</button>
       <button class="chip-btn" data-prompt="Outline dialogue beats for a rich CEO reveal format">🎭 Script Outline</button>
-      <button class="chip-btn" data-prompt="How can Mia and Ima increase retention after the first 3 seconds?">📈 Retention Tips</button>
+      <button class="chip-btn" id="chipMemoryNotes">🧠 What Mai Learned</button>
     </div>
 
     <!-- Chat Input Area -->
     <div class="chat-input-wrap">
       <button id="micBtn" class="btn-mic" title="Speak with microphone">🎤</button>
-      <textarea id="chatInput" class="chat-textarea" placeholder="Ask Gemini (or speak aloud)..." rows="1"></textarea>
+      <textarea id="chatInput" class="chat-textarea" placeholder="Talk with Mai (or speak aloud)..." rows="1"></textarea>
       <button id="chatSendBtn" class="btn-chat-send" title="Send message">➔</button>
     </div>
   </aside>
@@ -2387,7 +2487,7 @@ Ask me to punch up a 2-second hook, outline script beats, suggest camera angles,
     const pickImaBtn = document.getElementById("pickImaBtn");
     const closePickModalBtn = document.getElementById("closePickModalBtn");
 
-    // DOM Elements - Gemini Voice Chat
+    // DOM Elements - Mai Voice Copilot
     const geminiChatToggleBtn = document.getElementById("geminiChatToggleBtn");
     const geminiChatPanel = document.getElementById("geminiChatPanel");
     const closeChatBtn = document.getElementById("closeChatBtn");
@@ -2400,11 +2500,18 @@ Ask me to punch up a 2-second hook, outline script beats, suggest camera angles,
     const voiceToggleText = document.getElementById("voiceToggleText");
     const voiceSoundwave = document.getElementById("voiceSoundwave");
     const stopVoiceBtn = document.getElementById("stopVoiceBtn");
+    const btnLiveTalk = document.getElementById("btnLiveTalk");
+    const liveTalkText = document.getElementById("liveTalkText");
+    const voiceListeningBanner = document.getElementById("voiceListeningBanner");
+    const cancelListenBtn = document.getElementById("cancelListenBtn");
+    const btnViewMemory = document.getElementById("btnViewMemory");
+    const chipMemoryNotes = document.getElementById("chipMemoryNotes");
 
     // Chat conversation history state
     let chatConversation = [];
     let autoVoiceEnabled = true;
     let isListening = false;
+    let isLiveTalkMode = false;
     let speechRecognition = null;
 
     // Sample Starter Data
@@ -3499,14 +3606,89 @@ ${idea.dialogueOutline || 'N/A'}`;
           toggleVoiceSpeechBtn.classList.add("voice-active");
           voiceToggleIcon.textContent = "🔊";
           voiceToggleText.textContent = "Voice On";
-          showToast("Gemini female voice enabled");
-          speakText("Voice enabled! I'm ready to help you brainstorm.");
+          showToast("Mai voice narration enabled");
+          speakText("Voice enabled! I'm ready to brainstorm with you.");
         } else {
           toggleVoiceSpeechBtn.classList.remove("voice-active");
           voiceToggleIcon.textContent = "🔇";
           voiceToggleText.textContent = "Muted";
           stopSpeaking();
-          showToast("Gemini voice muted");
+          if (isLiveTalkMode) {
+            isLiveTalkMode = false;
+            btnLiveTalk.classList.remove("live-talk-active");
+            liveTalkText.textContent = "Live Talk";
+          }
+          showToast("Mai voice muted");
+        }
+      });
+
+      // Live Conversational Talk (Hands-free voice loop like Gemini Live)
+      btnLiveTalk.addEventListener("click", () => {
+        isLiveTalkMode = !isLiveTalkMode;
+        if (isLiveTalkMode) {
+          autoVoiceEnabled = true;
+          toggleVoiceSpeechBtn.classList.add("voice-active");
+          voiceToggleIcon.textContent = "🔊";
+          voiceToggleText.textContent = "Voice On";
+          btnLiveTalk.classList.add("live-talk-active");
+          liveTalkText.textContent = "Live Talk On";
+          showToast("Live Voice Talk with Mai active! Speak to her.");
+          
+          if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
+            speakText("Live talk active. I'm listening!");
+          }
+        } else {
+          btnLiveTalk.classList.remove("live-talk-active");
+          liveTalkText.textContent = "Live Talk";
+          stopListening();
+          showToast("Live Voice Talk paused.");
+        }
+      });
+
+      cancelListenBtn.addEventListener("click", () => {
+        stopListening();
+        if (isLiveTalkMode) {
+          isLiveTalkMode = false;
+          btnLiveTalk.classList.remove("live-talk-active");
+          liveTalkText.textContent = "Live Talk";
+          showToast("Live voice paused.");
+        }
+      });
+
+      // Adaptive Memory Modals & Chips
+      btnViewMemory.addEventListener("click", openMemoryModal);
+      if (chipMemoryNotes) {
+        chipMemoryNotes.addEventListener("click", openMemoryModal);
+      }
+
+      const closeMemoryModalBtn = document.getElementById("closeMemoryModalBtn");
+      const btnDoneMemory = document.getElementById("btnDoneMemory");
+      const btnAddMemory = document.getElementById("btnAddMemory");
+      const btnResetMemory = document.getElementById("btnResetMemory");
+      const memoryModalOverlay = document.getElementById("memoryModalOverlay");
+      const newMemoryInput = document.getElementById("newMemoryInput");
+
+      closeMemoryModalBtn.addEventListener("click", () => memoryModalOverlay.classList.remove("active"));
+      btnDoneMemory.addEventListener("click", () => memoryModalOverlay.classList.remove("active"));
+      memoryModalOverlay.addEventListener("click", (e) => {
+        if (e.target === memoryModalOverlay) memoryModalOverlay.classList.remove("active");
+      });
+
+      btnAddMemory.addEventListener("click", () => {
+        const val = newMemoryInput.value.trim();
+        if (val) {
+          addMemoryInsight(val);
+          newMemoryInput.value = "";
+          renderMemoryList();
+          showToast("Mai learned new rule! ✨");
+        }
+      });
+
+      btnResetMemory.addEventListener("click", () => {
+        if (confirm("Reset Mai's learned memory back to default?")) {
+          localStorage.removeItem("mai_adaptive_memory");
+          renderMemoryList();
+          showToast("Mai's memory reset to defaults.");
         }
       });
 
@@ -3523,6 +3705,7 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       // Suggestion chips
       document.querySelectorAll(".chip-btn").forEach(chip => {
+        if (chip.id === "chipMemoryNotes") return;
         chip.addEventListener("click", () => {
           chatInput.value = chip.getAttribute("data-prompt");
           sendUserChatMessage();
@@ -3669,12 +3852,18 @@ ${idea.dialogueOutline || 'N/A'}`;
         chatInput.focus();
         alignChatPanelToButton();
 
-        // Gemini speaks once clicked on to open!
+        // Mai speaks once clicked on to open!
         if (autoVoiceEnabled) {
-          speakText("Hey Mia and Ima! I'm your Gemini copilot. What are we brainstorming today?");
+          speakText("Hey Mia and Ima! I'm Mai. What are we brainstorming today?");
         }
       } else {
         stopSpeaking();
+        if (isLiveTalkMode) {
+          isLiveTalkMode = false;
+          btnLiveTalk.classList.remove("live-talk-active");
+          liveTalkText.textContent = "Live Talk";
+          stopListening();
+        }
       }
     }
 
@@ -3706,7 +3895,7 @@ ${idea.dialogueOutline || 'N/A'}`;
         micBtn.style.opacity = "0.5";
         micBtn.title = "Speech recognition not supported in this browser";
         micBtn.addEventListener("click", () => {
-          showToast("Speech-to-text is not supported in this browser. Please type your message.");
+          showToast("Speech recognition is not supported in this browser. Please type your message.");
         });
         return;
       }
@@ -3720,7 +3909,7 @@ ${idea.dialogueOutline || 'N/A'}`;
         isListening = true;
         micBtn.classList.add("listening");
         micBtn.textContent = "🛑";
-        showToast("Listening... speak your question now!");
+        voiceListeningBanner.classList.add("active");
       };
 
       speechRecognition.onresult = (event) => {
@@ -3755,14 +3944,28 @@ ${idea.dialogueOutline || 'N/A'}`;
       });
     }
 
+    function startListeningHandsFree() {
+      if (!speechRecognition || isListening) return;
+      try {
+        stopSpeaking();
+        speechRecognition.start();
+      } catch (err) {
+        console.warn("Could not start hands-free listening:", err);
+      }
+    }
+
     function stopListening() {
       isListening = false;
+      if (speechRecognition) {
+        try { speechRecognition.stop(); } catch (e) {}
+      }
       micBtn.classList.remove("listening");
       micBtn.textContent = "🎤";
+      voiceListeningBanner.classList.remove("active");
     }
 
     /**
-     * Send user chat message to Gemini backend API (/api/chat)
+     * Send user chat message to Mai backend API (/api/chat)
      */
     async function sendUserChatMessage() {
       const text = chatInput.value.trim();
@@ -3770,6 +3973,13 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       chatInput.value = "";
       chatSendBtn.disabled = true;
+
+      // Detect preference / learning statements to adapt intelligence
+      const lower = text.toLowerCase();
+      if (lower.startsWith("i prefer") || lower.startsWith("we prefer") || lower.startsWith("we like") || lower.includes("always make sure") || lower.includes("remember that") || lower.includes("our style is") || lower.includes("focus on")) {
+        addMemoryInsight(text);
+        showToast("Mai learned your creative style! 🧠");
+      }
 
       // Add user message to UI
       appendChatMessage("user", text);
@@ -3784,7 +3994,7 @@ ${idea.dialogueOutline || 'N/A'}`;
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: chatConversation,
-            systemInstruction: "You are the creative director and viral development copilot for Mia and Ima on their trend intelligence platform (MIA / IMA — Trend Picker). You help them develop hooks, script dialogue beats, analyze viral formats, brainstorm camera angles, optimize retention, and solve creative or technical development questions. Be sharp, concise, energetic, and highly actionable. Keep responses conversational and punchy so they sound great when read aloud by voice."
+            adaptiveMemory: getAdaptiveMemory().join("\n- ")
           })
         });
 
@@ -3807,7 +4017,7 @@ ${idea.dialogueOutline || 'N/A'}`;
         }
 
       } catch (err) {
-        console.error("Gemini Chat Error:", err);
+        console.error("Mai Chat Error:", err);
         loadingMsgEl.remove();
         appendChatMessage("assistant", "⚠️ Sorry, I ran into an issue communicating with Gemini: " + err.message + ". Please verify GEMINI_API_KEY in the server environment.");
       } finally {
@@ -3822,7 +4032,7 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       const senderSpan = document.createElement("span");
       senderSpan.className = "msg-sender";
-      senderSpan.textContent = role === "user" ? "👤 Mia / Ima" : "✨ Gemini";
+      senderSpan.textContent = role === "user" ? "👤 Mia / Ima" : "✨ Mai";
 
       const bubbleDiv = document.createElement("div");
       bubbleDiv.className = "msg-bubble";
@@ -3863,7 +4073,7 @@ ${idea.dialogueOutline || 'N/A'}`;
       const msgDiv = document.createElement("div");
       msgDiv.className = "chat-msg assistant";
       msgDiv.innerHTML = `
-        <span class="msg-sender">✨ Gemini is thinking...</span>
+        <span class="msg-sender">✨ Mai is thinking...</span>
         <div class="msg-bubble" style="color: var(--text-muted); font-style: italic;">
           Analyzing trend intelligence & formulating response...
         </div>
@@ -3874,7 +4084,92 @@ ${idea.dialogueOutline || 'N/A'}`;
     }
 
     /**
-     * Speech Synthesis (Gemini Female Voice Intelligence)
+     * ADAPTIVE INTELLIGENCE MEMORY HELPERS
+     */
+    const DEFAULT_ADAPTIVE_MEMORY = [
+      "Creative Partners: Mia & Ima (collaborative creators & developers).",
+      "Core formats: Organic vs Lab Float Tests, Situationship POV drama, Rich CEO reveals, high-retention TikTok pacing.",
+      "Hook Rule: Must create an intense curiosity gap or visual intrigue in the first 2 seconds.",
+      "Tone: Punchy, witty, conversational, highly actionable, zero fluff."
+    ];
+
+    function getAdaptiveMemory() {
+      try {
+        const raw = localStorage.getItem("mai_adaptive_memory");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return [...DEFAULT_ADAPTIVE_MEMORY];
+    }
+
+    function saveAdaptiveMemory(memArray) {
+      try {
+        localStorage.setItem("mai_adaptive_memory", JSON.stringify(memArray));
+      } catch (e) {}
+    }
+
+    function addMemoryInsight(insight) {
+      const mem = getAdaptiveMemory();
+      if (!mem.includes(insight)) {
+        mem.push(insight);
+        if (mem.length > 20) mem.splice(4, 1);
+        saveAdaptiveMemory(mem);
+      }
+    }
+
+    function openMemoryModal() {
+      renderMemoryList();
+      document.getElementById("memoryModalOverlay").classList.add("active");
+    }
+
+    function renderMemoryList() {
+      const container = document.getElementById("memoryListContainer");
+      if (!container) return;
+      const mem = getAdaptiveMemory();
+      container.innerHTML = "";
+
+      mem.forEach((item, idx) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.style.display = "flex";
+        itemDiv.style.alignItems = "center";
+        itemDiv.style.justifyContent = "space-between";
+        itemDiv.style.padding = "8px 12px";
+        itemDiv.style.background = "rgba(255, 255, 255, 0.04)";
+        itemDiv.style.border = "1px solid var(--border-subtle)";
+        itemDiv.style.borderRadius = "8px";
+        itemDiv.style.fontSize = "12px";
+        itemDiv.style.color = "#cbd5e1";
+
+        const textSpan = document.createElement("span");
+        textSpan.style.flex = "1";
+        textSpan.style.marginRight = "8px";
+        textSpan.textContent = `• ${item}`;
+
+        const delBtn = document.createElement("button");
+        delBtn.style.background = "transparent";
+        delBtn.style.border = "none";
+        delBtn.style.color = "#94a3b8";
+        delBtn.style.cursor = "pointer";
+        delBtn.style.fontSize = "14px";
+        delBtn.textContent = "✕";
+        delBtn.title = "Delete memory item";
+        delBtn.onclick = () => {
+          mem.splice(idx, 1);
+          saveAdaptiveMemory(mem);
+          renderMemoryList();
+          showToast("Memory item removed");
+        };
+
+        itemDiv.appendChild(textSpan);
+        itemDiv.appendChild(delBtn);
+        container.appendChild(itemDiv);
+      });
+    }
+
+    /**
+     * Speech Synthesis (Mai Female Voice Intelligence)
      */
     function getFemaleVoice() {
       if (!window.speechSynthesis) return null;
@@ -3941,10 +4236,17 @@ ${idea.dialogueOutline || 'N/A'}`;
 
       utterance.onstart = () => {
         voiceSoundwave.classList.add("active");
+        if (voiceListeningBanner) voiceListeningBanner.classList.remove("active");
       };
 
       utterance.onend = () => {
         voiceSoundwave.classList.remove("active");
+        // Hands-free conversational loop: when Mai finishes speaking, listen to user!
+        if (isLiveTalkMode) {
+          setTimeout(() => {
+            startListeningHandsFree();
+          }, 350);
+        }
       };
 
       utterance.onerror = () => {
