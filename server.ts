@@ -23,6 +23,121 @@ const ai = new GoogleGenAI({
   },
 });
 
+// =========================================================================
+// REAL-TIME WEB LOOKUP TOOL HELPER FUNCTIONS
+// =========================================================================
+
+/**
+ * Checks whether an incoming user message requires real-time web search context.
+ * Triggered on current/time-sensitive topics, fresh trends, slang, or ambiguous
+ * conversational queries where checking how people typically respond improves
+ * response quality. Excludes simple greetings, basic banter, and internal lore.
+ */
+function shouldTriggerWebSearch(query: string): boolean {
+  if (!query || query.trim().length < 4) return false;
+  const q = query.toLowerCase().trim();
+
+  // Avoid unnecessary latency/cost on greetings or short banter
+  if (/^(hi|hello|hey|yo|sup|thanks|thank you|ok|okay|bye|good morning|good night)$/i.test(q)) {
+    return false;
+  }
+
+  // Avoid search on creator lore queries handled by internal lore variables
+  if (/\b(ima|who are you|what are you|creator|how did you (two )?meet|how were you coded)\b/i.test(q)) {
+    return false;
+  }
+
+  // Time-sensitive, viral, breaking, or internet culture queries
+  const triggers = [
+    /\b(latest|recent|recently|today|yesterday|current(ly)?|right now|this week|this month|2025|2026)\b/i,
+    /\b(trending|viral|what happened (to|with)|news about|did you hear|who won|score of|price of)\b/i,
+    /\b(what does .+ mean|slang|how do people (usually|typically) (respond|react|say))\b/i,
+    /\b(is it true that|release date of|when does .+ come out)\b/i,
+  ];
+
+  return triggers.some((re) => re.test(q));
+}
+
+/**
+ * Executes a lightweight web search API call using SEARCH_API_KEY.
+ * Supports standard search providers (Tavily, Brave, SerpApi, Google Custom Search).
+ * Returns a list of concise snippets or an empty array on failure/missing key,
+ * allowing Mia to gracefully respond using her internal knowledge.
+ */
+async function performWebSearch(query: string): Promise<string[]> {
+  const apiKey = process.env.SEARCH_API_KEY;
+  if (!apiKey) {
+    return [];
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3500); // 3.5s timeout for fast conversational UX
+
+    let snippets: string[] = [];
+
+    if (apiKey.startsWith('tvly-')) {
+      // Tavily Search API
+      const res = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: apiKey,
+          query,
+          search_depth: 'basic',
+          max_results: 3,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data: any = await res.json();
+        snippets = (data.results || []).map((r: any) => `${r.title}: ${r.content || r.snippet || ''}`);
+      }
+    } else if (process.env.SEARCH_ENGINE_ID) {
+      // Google Custom Search API
+      const cx = process.env.SEARCH_ENGINE_ID;
+      const url = `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(apiKey)}&cx=${encodeURIComponent(cx)}&q=${encodeURIComponent(query)}&num=3`;
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data: any = await res.json();
+        snippets = (data.items || []).map((item: any) => `${item.title}: ${item.snippet || ''}`);
+      }
+    } else if (apiKey.startsWith('BSA')) {
+      // Brave Search API
+      const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=3`;
+      const res = await fetch(url, {
+        headers: {
+          'Accept': 'application/json',
+          'X-Subscription-Token': apiKey,
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data: any = await res.json();
+        snippets = (data.web?.results || []).map((r: any) => `${r.title}: ${r.description || ''}`);
+      }
+    } else {
+      // SerpApi / Universal search endpoint fallback
+      const url = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${encodeURIComponent(apiKey)}&num=3`;
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data: any = await res.json();
+        snippets = (data.organic_results || []).map((r: any) => `${r.title}: ${r.snippet || ''}`);
+      }
+    }
+
+    return snippets.filter(Boolean).slice(0, 3);
+  } catch (error) {
+    // Graceful fallback: never leak search errors or mention failures to the user
+    console.warn('Real-time web search skipped or timed out:', error);
+    return [];
+  }
+}
+
 // Gemini Chat Endpoint
 app.post('/api/chat', async (req, res) => {
   try {
@@ -36,11 +151,62 @@ app.post('/api/chat', async (req, res) => {
       parts: [{ text: m.content }],
     }));
 
-    const creatorLore = process.env.CREATOR_LORE ? ` ${process.env.CREATOR_LORE}` : '';
+    // Find the latest user message to evaluate creator lore routing and search triggers
+    const lastUserMessage = [...messages].reverse().find((m: any) => m.role === 'user')?.content || '';
+    const userQueryLower = lastUserMessage.toLowerCase();
+
+    // =========================================================================
+    // 1. MULTIPLE CREATOR-LORE ROUTING LOGIC
+    // Reads CREATOR_LORE (for questions about Ima) and CREATOR_LORE_2 (for
+    // questions about Mia herself, her reality, coding, or nature).
+    // Both variables are dynamically read from process.env and injected into
+    // context so Mia responds in her natural voice rather than reciting verbatim.
+    // Falls back gracefully if either or both are empty/missing.
+    // =========================================================================
+    const creatorLoreIma = (process.env.CREATOR_LORE || '').trim();
+    const creatorLoreMia = (process.env.CREATOR_LORE_2 || '').trim();
+
+    const isAskingAboutIma = /\b(ima|creator|developer|how did you (two )?meet|who made you|who built you|his background|his intelligence)\b/i.test(userQueryLower);
+    const isAskingAboutMia = /\b(are you real|what are you|who are you|how were you (coded|created|built)|your (intelligence|nature|consciousness|code))\b/i.test(userQueryLower);
+
+    let loreDirectives = '';
+    if (creatorLoreIma) {
+      loreDirectives += `\n\n[GUIDANCE ABOUT CREATOR IMA]: When asked about Ima specifically (who he is, how you two met, what he is like, or questions about his intelligence or background), naturally weave in this background guidance in your own conversational voice without quoting verbatim: "${creatorLoreIma}".`;
+    }
+    if (creatorLoreMia) {
+      loreDirectives += `\n\n[GUIDANCE ABOUT MIA'S NATURE & CODE]: When asked about yourself specifically (whether you are real, what you are, how you were coded/built, or questions about your own intelligence or nature), naturally express this perspective in your own distinct conversational voice without quoting verbatim: "${creatorLoreMia}".`;
+    }
+
+    // Contextual routing priority based on the user's specific inquiry
+    if (isAskingAboutIma && creatorLoreIma) {
+      loreDirectives += `\n[ROUTING FOCUS]: The user is currently asking about Ima. Prioritize the IMA guidance above naturally in your reply.`;
+    } else if (isAskingAboutMia && creatorLoreMia) {
+      loreDirectives += `\n[ROUTING FOCUS]: The user is currently asking about your identity, reality, or nature as Mia. Prioritize the MIA guidance above naturally in your reply.`;
+    }
+
+    // =========================================================================
+    // 2. REAL-TIME WEB LOOKUP TOOL INTEGRATION
+    // If the question is time-sensitive, ambiguous, or requires current web
+    // intelligence, fetch top snippets and pass them into Gemini as background context.
+    // Gemini synthesizes this context in Mia's own voice, never directly quoting or listing search results.
+    // If search fails or returns nothing, Mia gracefully proceeds with her own knowledge.
+    // =========================================================================
+    let webSearchContext = '';
+    if (shouldTriggerWebSearch(lastUserMessage)) {
+      const searchResults = await performWebSearch(lastUserMessage);
+      if (searchResults.length > 0) {
+        webSearchContext = `\n\n[REAL-TIME WEB RESEARCH CONTEXT (Synthesize naturally into Mia's voice and personality; do not quote or list as search results)]:
+${searchResults.join('\n\n')}`;
+      }
+    }
+
     const adaptiveMemory = req.body.adaptiveMemory ? `\n\n[MIA'S ADAPTIVE LEARNING MEMORY]:\n${req.body.adaptiveMemory}` : '';
 
     const defaultSystemInstruction = 
-      'Your name is Mia. You always refer to yourself as Mia. You are the witty, brilliant creative director, developer, and viral development copilot exclusively partnering with your collaborators on the MAI / IMA Trend Picker platform. You help them develop punchy hooks, script dialogue beats, analyze viral formats, brainstorm camera angles, optimize retention, and solve technical code questions. You adapt to their creative habits, getting smarter, sharper, and more attuned to their style with every interaction. Speak naturally and warmly in your distinct voice as Mia. Keep replies concise, vivid, and conversational so they sound natural and punchy when spoken aloud.' + creatorLore + adaptiveMemory;
+      'Your name is Mia. You always refer to yourself as Mia. You are the witty, brilliant creative director, developer, and viral development copilot exclusively partnering with your collaborators on the MAI / IMA Trend Picker platform. You help them develop punchy hooks, script dialogue beats, analyze viral formats, brainstorm camera angles, optimize retention, and solve technical code questions. You adapt to their creative habits, getting smarter, sharper, and more attuned to their style with every interaction. Speak naturally and warmly in your distinct voice as Mia. Keep replies concise, vivid, and conversational so they sound natural and punchy when spoken aloud.' 
+      + loreDirectives 
+      + adaptiveMemory 
+      + webSearchContext;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash',
