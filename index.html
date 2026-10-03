@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SASHA / IMA — Trend Picker</title>
-  <meta name="description" content="Trend intelligence dashboard for Sasha & Ima to track, curate, and produce viral trend ideas in real time.">
-  <meta property="og:title" content="SASHA / IMA — Trend Picker">
-  <meta property="og:description" content="Trend intelligence dashboard for Sasha & Ima to track, curate, and produce viral trend ideas in real time.">
+  <title>MIA / IMA — Trend Picker</title>
+  <meta name="description" content="Trend intelligence dashboard for Mia & Ima to track, curate, and produce viral trend ideas in real time with Gemini voice intelligence.">
+  <meta property="og:title" content="MIA / IMA — Trend Picker">
+  <meta property="og:description" content="Trend intelligence dashboard for Mia & Ima to track, curate, and produce viral trend ideas in real time with Gemini voice intelligence.">
   <meta property="og:type" content="website">
 
   <!-- Inter & JetBrains Mono Fonts -->
@@ -61,7 +61,7 @@
       min-height: 100vh;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
 
     /* Container */
@@ -111,7 +111,7 @@
       gap: 8px;
     }
 
-    .wordmark .name-sasha {
+    .wordmark .name-mia {
       color: #ffffff;
     }
 
@@ -1019,7 +1019,7 @@
       font-weight: 800;
     }
 
-    .avatar-sasha {
+    .avatar-mia {
       background: linear-gradient(135deg, #ec4899, #8b5cf6);
       color: #ffffff;
     }
@@ -1055,6 +1055,799 @@
       from { transform: translateY(10px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* =========================================================================
+       ROUND FLOATING CHAT ICON & GEMINI VOICE INTELLIGENCE PANEL
+       ========================================================================= */
+    .chat-floating-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45), 0 0 0 1px rgba(56, 189, 248, 0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      outline: none;
+    }
+
+    .chat-floating-btn:hover {
+      transform: scale(1.08) rotate(4deg);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6), 0 0 20px rgba(56, 189, 248, 0.6);
+    }
+
+    .chat-floating-btn:active {
+      transform: scale(0.95);
+    }
+
+    .chat-floating-btn .icon-sparkle {
+      font-size: 26px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .chat-floating-btn .pulse-ring {
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 189, 248, 0.6);
+      animation: pulseAnim 2.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulseAnim {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.22); opacity: 0; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    /* Chat Drawer / Flyout */
+    .gemini-chat-panel {
+      position: fixed;
+      bottom: 96px;
+      right: 24px;
+      width: 390px;
+      max-width: calc(100vw - 32px);
+      height: 610px;
+      max-height: calc(100vh - 120px);
+      background: #0f121a;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 18px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 950;
+      overflow: hidden;
+      animation: chatSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(16px);
+    }
+
+    .gemini-chat-panel.active {
+      display: flex;
+    }
+
+    @keyframes chatSlideIn {
+      from { transform: translateY(20px) scale(0.94); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    /* Chat Header */
+    .chat-header {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.85), rgba(15, 23, 42, 0.95));
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-badge-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .chat-header-text h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-header-text p {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .chat-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-voice-toggle {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .btn-voice-toggle.voice-active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+    }
+
+    .btn-chat-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+      font-size: 16px;
+      line-height: 1;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .btn-chat-close:hover {
+      color: #ffffff;
+    }
+
+    /* Voice Soundwave indicator */
+    .voice-soundwave {
+      display: none;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 14px;
+      background: rgba(56, 189, 248, 0.1);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      font-size: 11px;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .voice-soundwave.active {
+      display: flex;
+    }
+
+    .wave-bar {
+      width: 3px;
+      height: 12px;
+      background: #38bdf8;
+      border-radius: 2px;
+      animation: waveDance 0.8s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; height: 16px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; height: 8px; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; height: 14px; }
+
+    @keyframes waveDance {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+
+    /* Messages container */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #272f42 transparent;
+    }
+
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 88%;
+      animation: msgPop 0.15s ease-out;
+    }
+
+    @keyframes msgPop {
+      from { transform: translateY(6px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+    }
+
+    .chat-msg.assistant {
+      align-self: flex-start;
+    }
+
+    .msg-sender {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chat-msg.user .msg-sender {
+      align-self: flex-end;
+      color: #93c5fd;
+    }
+
+    .chat-msg.assistant .msg-sender {
+      color: #c084fc;
+    }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .chat-msg.user .msg-bubble {
+      background: linear-gradient(135deg, #3b82f6, #4f46e5);
+      color: #ffffff;
+      border-bottom-right-radius: 3px;
+    }
+
+    .chat-msg.assistant .msg-bubble {
+      background: #171b26;
+      color: #e2e8f0;
+      border: 1px solid var(--border-subtle);
+      border-bottom-left-radius: 3px;
+    }
+
+    .msg-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-msg-audio {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s;
+    }
+
+    .btn-msg-audio:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    /* Suggestion Chips */
+    .chat-chips {
+      padding: 4px 14px 8px 14px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .chat-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+    }
+
+    /* Chat Input Bar */
+    .chat-input-wrap {
+      padding: 10px 14px 14px 14px;
+      background: #0d0f15;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .chat-textarea {
+      flex: 1;
+      background: #141822;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+      min-height: 40px;
+      max-height: 100px;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color 0.15s;
+    }
+
+    .chat-textarea:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-mic {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #191e2b;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-mic:hover {
+      background: #232a3d;
+      color: #ffffff;
+    }
+
+    .btn-mic.listening {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #f87171;
+      animation: micPulse 1.2s infinite;
+    }
+
+    @keyframes micPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .btn-chat-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      border: 1px solid #6366f1;
+      color: #ffffff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-chat-send:hover {
+      background: linear-gradient(135deg, #4338ca, #2563eb);
+      transform: translateY(-1px);
+    }
+
+    .btn-chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* =========================================================================
+       AWARD-WINNING ENHANCEMENTS: METRICS, KANBAN, TELEPROMPTER, AI ASSIST
+       ========================================================================= */
+    /* Metrics Summary Bar */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color 0.15s;
+    }
+
+    .metric-card:hover {
+      border-color: var(--border-highlight);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-val {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .metric-val.highlight-cyan { color: var(--accent-cyan); }
+    .metric-val.highlight-amber { color: #fbbf24; }
+    .metric-val.highlight-green { color: #34d399; }
+
+    /* View Mode Switcher */
+    .view-toggle-wrap {
+      display: inline-flex;
+      background: #0f131c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-view-mode {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-view-mode.active {
+      background: var(--bg-surface);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    /* AI Magic Auto-Fill Box in Add Form */
+    .ai-magic-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ai-magic-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ai-magic-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #a5b4fc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .ai-magic-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ai-magic-input {
+      flex: 1;
+      background: #090b10;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .ai-magic-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    /* Kanban Pipeline Board */
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      min-height: 480px;
+    }
+
+    @media (max-width: 900px) {
+      .kanban-grid {
+        grid-template-columns: repeat(4, minmax(260px, 1fr));
+      }
+    }
+
+    .kanban-col {
+      background: rgba(18, 21, 28, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .kanban-col-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kanban-cards-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 65vh;
+      scrollbar-width: thin;
+    }
+
+    .kanban-card {
+      background: #151923;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .kanban-card:hover {
+      border-color: var(--border-highlight);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .kanban-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+    }
+
+    .kanban-card-hook {
+      font-size: 11px;
+      color: #94a3b8;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px 8px;
+      border-radius: 6px;
+      border-left: 2px solid var(--accent-cyan);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .kanban-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Teleprompter Fullscreen Script Modal */
+    .teleprompter-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #050608;
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      padding: 24px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .teleprompter-overlay.active {
+      display: flex;
+    }
+
+    .teleprompter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #1f2430;
+      margin-bottom: 24px;
+    }
+
+    .teleprompter-content {
+      flex: 1;
+      max-width: 840px;
+      margin: 0 auto;
+      width: 100%;
+      overflow-y: auto;
+      padding: 20px 0;
+      scrollbar-width: thin;
+    }
+
+    .teleprompter-hook-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 2px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .teleprompter-hook-text {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    .teleprompter-script-text {
+      font-size: 20px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      font-family: inherit;
+    }
+
+    /* Hook Refinement Modal */
+    .polish-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .polish-modal-overlay.active {
+      display: flex;
+    }
+
+    .polish-modal {
+      background: #131722;
+      border: 1px solid var(--border-highlight);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    .polish-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .polish-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hook-variant-card {
+      background: #1a202c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hook-variant-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-cyan);
+    }
+
+    .hook-variant-text {
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 600;
+      line-height: 1.45;
+    }
   </style>
 
   <!-- Importmap for standard modular Firebase SDK v11+ from CDN -->
@@ -1070,11 +1863,11 @@
 <body>
   <div class="app-container">
 
-    <!-- Top Header & Branding -->
+    <!-- Top Header & Branding (Mia / Ima) -->
     <header class="header">
       <div class="brand-wrap">
         <div class="wordmark">
-          <span class="name-sasha">SASHA</span>
+          <span class="name-mia">MIA</span>
           <span class="slash">/</span>
           <span class="name-ima">IMA</span>
           <span class="pill-tag">TREND PICKER</span>
@@ -1082,12 +1875,41 @@
         <div class="tagline">Trend intelligence, built together.</div>
       </div>
       <div class="header-actions">
+        <div class="view-toggle-wrap">
+          <button id="viewFeedBtn" class="btn-view-mode active" title="Switch to Feed List View">📋 Feed</button>
+          <button id="viewKanbanBtn" class="btn-view-mode" title="Switch to Pipeline Kanban Board">📊 Pipeline Board</button>
+        </div>
+        <button id="exportBriefBtn" class="btn btn-secondary btn-sm" title="Export ideas to JSON">⬇️ Export</button>
         <button id="toggleFormBtn" class="btn btn-primary">
           <span id="toggleIcon">+</span>
           <span id="toggleText">New Trend Idea</span>
         </button>
       </div>
     </header>
+
+    <!-- Metrics Executive Summary Bar -->
+    <section class="metrics-bar" id="metricsBar">
+      <div class="metric-card">
+        <span class="metric-label">Total Ideas</span>
+        <span class="metric-val" id="metricTotalIdeas">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">In Production</span>
+        <span class="metric-val highlight-amber" id="metricInProduction">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Completed</span>
+        <span class="metric-val highlight-green" id="metricCompleted">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Projected Views</span>
+        <span class="metric-val highlight-cyan" id="metricTotalViews">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Mia / Ima Claimed</span>
+        <span class="metric-val" id="metricOwnershipRatio">0 / 0</span>
+      </div>
+    </section>
 
     <!-- Status Banner (Live Sync vs Demo Mode) -->
     <div id="statusBanner" class="banner" style="display: none;">
@@ -1100,6 +1922,18 @@
       <div class="form-title">
         <span>Create New Trend Idea</span>
         <button type="button" id="closeFormBtn" class="btn btn-secondary btn-sm" style="padding: 4px 8px;">✕</button>
+      </div>
+
+      <!-- AI Magic Auto-Fill with Gemini -->
+      <div class="ai-magic-box">
+        <div class="ai-magic-header">
+          <span class="ai-magic-title">✨ Gemini Viral Auto-Draft</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Type a rough concept & let Gemini engineer the hook, beats & shots</span>
+        </div>
+        <div class="ai-magic-input-group">
+          <input type="text" id="aiTopicInput" class="ai-magic-input" placeholder="e.g. olive oil water test, phone handover drama, or CEO secret reveal...">
+          <button type="button" id="btnAiDraft" class="btn btn-primary btn-sm" style="flex-shrink: 0;">✨ Auto-Draft</button>
+        </div>
       </div>
       
       <form id="addIdeaForm">
@@ -1227,22 +2061,27 @@
       </div>
     </div>
 
-    <!-- Trend Ideas Cards List -->
+    <!-- Trend Ideas Cards List (Feed View) -->
     <main id="cardsList" class="cards-container">
       <!-- Cards dynamically rendered here -->
     </main>
 
+    <!-- Pipeline Kanban Board View -->
+    <div id="kanbanBoard" class="kanban-grid" style="display: none;">
+      <!-- 4 columns: Pending, Picked, In Production, Done -->
+    </div>
+
   </div>
 
-  <!-- Quick Pick Modal (Sasha / Ima) -->
+  <!-- Quick Pick Modal (Mia / Ima) -->
   <div id="pickModalOverlay" class="pick-modal-overlay">
     <div class="pick-modal">
       <div class="pick-modal-title">Who is picking this idea?</div>
       <div class="pick-modal-subtitle" id="pickModalIdeaTitle">Select owner to claim ownership and move to Picked</div>
       <div class="pick-options">
-        <button type="button" class="btn-persona" id="pickSashaBtn">
-          <div class="persona-avatar avatar-sasha">S</div>
-          <span>Sasha</span>
+        <button type="button" class="btn-persona" id="pickMiaBtn">
+          <div class="persona-avatar avatar-mia">M</div>
+          <span>Mia</span>
         </button>
         <button type="button" class="btn-persona" id="pickImaBtn">
           <div class="persona-avatar avatar-ima">I</div>
@@ -1253,8 +2092,146 @@
     </div>
   </div>
 
+  <!-- Teleprompter / Fullscreen Script Modal -->
+  <div id="teleprompterModalOverlay" class="teleprompter-overlay">
+    <div class="teleprompter-header">
+      <div>
+        <h2 id="teleprompterTitle" style="font-size: 18px; font-weight: 800; color: #ffffff;">Teleprompter Mode</h2>
+        <span id="teleprompterFormat" style="font-size: 12px; color: var(--accent-cyan);">Format</span>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="btnTeleprompterSpeak" class="btn btn-secondary btn-sm">🔊 Read Script Aloud</button>
+        <button id="btnCloseTeleprompter" class="btn btn-primary btn-sm">✕ Exit</button>
+      </div>
+    </div>
+    <div class="teleprompter-content">
+      <div class="teleprompter-hook-box">
+        <div style="font-size: 11px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 6px;">⚡ 2-Second Hook:</div>
+        <div id="teleprompterHook" class="teleprompter-hook-text">...</div>
+      </div>
+      <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Dialogue & Beats:</div>
+      <div id="teleprompterScript" class="teleprompter-script-text">...</div>
+    </div>
+  </div>
+
+  <!-- AI Hook Refinement Modal -->
+  <div id="polishModalOverlay" class="polish-modal-overlay">
+    <div class="polish-modal">
+      <div class="polish-modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">✨</span>
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: #ffffff;">Gemini Viral Hook Polish</h3>
+            <p style="font-size: 11px; color: var(--text-muted);">High-retention 3-second psychological variants</p>
+          </div>
+        </div>
+        <button id="closePolishModalBtn" class="btn-chat-close">✕</button>
+      </div>
+      <div class="polish-modal-body" id="polishVariantsContainer">
+        <div style="text-align: center; color: var(--text-muted); padding: 20px;">Analyzing hook retention with Gemini...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Trend Idea Modal -->
+  <div id="editModalOverlay" class="polish-modal-overlay">
+    <div class="polish-modal" style="max-width: 680px;">
+      <div class="polish-modal-header">
+        <h3 style="font-size: 14px; font-weight: 700; color: #ffffff;">Edit Trend Idea</h3>
+        <button id="closeEditModalBtn" class="btn-chat-close">✕</button>
+      </div>
+      <form id="editIdeaForm" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="editIdeaId">
+        <div class="form-group">
+          <label class="form-label" for="editTitleInput">Title</label>
+          <input type="text" id="editTitleInput" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editHookInput">Hook (First 2 Seconds)</label>
+          <textarea id="editHookInput" class="form-textarea" style="border-left: 3px solid var(--accent-cyan);" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editDescInput">Concept Summary</label>
+          <textarea id="editDescInput" class="form-textarea" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editDialogueInput">Dialogue Outline / Beats</label>
+          <textarea id="editDialogueInput" class="form-textarea" style="min-height: 80px;"></textarea>
+        </div>
+        <div class="form-actions" style="margin-top: 8px;">
+          <button type="button" id="cancelEditBtn" class="btn btn-secondary btn-sm">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Round Floating Chat Button (Gemini Voice Intelligence) -->
+  <button id="geminiChatToggleBtn" class="chat-floating-btn" aria-label="Open Gemini Voice Intelligence Chat">
+    <div class="pulse-ring"></div>
+    <span class="icon-sparkle">✨</span>
+  </button>
+
+  <!-- Gemini Voice Intelligence Chat Panel -->
+  <aside id="geminiChatPanel" class="gemini-chat-panel" aria-label="Gemini Voice Copilot">
+    <div class="chat-header">
+      <div class="chat-header-title">
+        <div class="ai-badge-circle">🎙️</div>
+        <div class="chat-header-text">
+          <h3>Gemini Intelligence</h3>
+          <p>Mia / Ima Creative & Dev Copilot</p>
+        </div>
+      </div>
+      <div class="chat-controls">
+        <button id="toggleVoiceSpeechBtn" class="btn-voice-toggle voice-active" title="Toggle voice narration">
+          <span id="voiceToggleIcon">🔊</span>
+          <span id="voiceToggleText">Voice On</span>
+        </button>
+        <button id="closeChatBtn" class="btn-chat-close" title="Close chat">✕</button>
+      </div>
+    </div>
+
+    <!-- Active Speaking Audio Visualizer Wave -->
+    <div id="voiceSoundwave" class="voice-soundwave">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <span style="margin-left: 6px;">Gemini is speaking...</span>
+      <button id="stopVoiceBtn" class="btn-msg-audio" style="margin-left: auto;">Stop ⏹️</button>
+    </div>
+
+    <!-- Chat Messages Scroll Area -->
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-msg assistant">
+        <span class="msg-sender">✨ Gemini Copilot</span>
+        <div class="msg-bubble">Hey Mia & Ima! 👋 I'm your viral trend & development copilot.
+        
+Ask me to punch up a 2-second hook, outline script beats, suggest camera angles, or answer any development questions!</div>
+        <div class="msg-actions">
+          <button class="btn-msg-audio" onclick="speakText('Hey Mia & Ima! I am your viral trend and development copilot. Ask me to punch up a 2-second hook, outline script beats, suggest camera angles, or answer any development questions!')">🔊 Listen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Question Chips -->
+    <div class="chat-chips">
+      <button class="chip-btn" data-prompt="Punch up a 2-second viral hook for an organic vs lab food test">⚡ Hook Ideas</button>
+      <button class="chip-btn" data-prompt="Give me 3 viral camera angles for high retention TikToks">🎬 Camera Angles</button>
+      <button class="chip-btn" data-prompt="Outline dialogue beats for a rich CEO reveal format">🎭 Script Outline</button>
+      <button class="chip-btn" data-prompt="How can Mia and Ima increase retention after the first 3 seconds?">📈 Retention Tips</button>
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="chat-input-wrap">
+      <button id="micBtn" class="btn-mic" title="Speak with microphone">🎤</button>
+      <textarea id="chatInput" class="chat-textarea" placeholder="Ask Gemini (or speak aloud)..." rows="1"></textarea>
+      <button id="chatSendBtn" class="btn-chat-send" title="Send message">➔</button>
+    </div>
+  </aside>
 
   <!-- Application Logic & Firebase Integration -->
   <script type="module">
@@ -1277,7 +2254,7 @@
      * backgroundSetting  string           Location, set design, or backdrop requirements
      * estimatedViews     number           Projected view potential / viral score
      * status             string           "pending" | "picked" | "in_production" | "done"
-     * pickedBy           string | null    "Sasha" or "Ima" (set when idea is claimed)
+     * pickedBy           string | null    "Mia" or "Ima" (set when idea is claimed)
      * createdAt          Timestamp        Firestore server timestamp of creation
      * =========================================================================
      */
@@ -1318,11 +2295,53 @@
     let currentNiche = "all";
     let currentSearchTerm = "";
     let currentSort = "newest";
+    let currentViewMode = "feed"; // "feed" or "kanban"
     let activePendingPickIdeaId = null;
+    let activeTeleprompterIdea = null;
+    let activePolishIdea = null;
     const expandedCardIds = new Set();
 
-    // DOM Elements
+    // DOM Elements - Dashboard
     const cardsListEl = document.getElementById("cardsList");
+    const kanbanBoardEl = document.getElementById("kanbanBoard");
+    const viewFeedBtn = document.getElementById("viewFeedBtn");
+    const viewKanbanBtn = document.getElementById("viewKanbanBtn");
+    const exportBriefBtn = document.getElementById("exportBriefBtn");
+    const aiTopicInput = document.getElementById("aiTopicInput");
+    const btnAiDraft = document.getElementById("btnAiDraft");
+
+    // Metrics DOM Elements
+    const metricTotalIdeas = document.getElementById("metricTotalIdeas");
+    const metricInProduction = document.getElementById("metricInProduction");
+    const metricCompleted = document.getElementById("metricCompleted");
+    const metricTotalViews = document.getElementById("metricTotalViews");
+    const metricOwnershipRatio = document.getElementById("metricOwnershipRatio");
+
+    // Teleprompter DOM
+    const teleprompterModalOverlay = document.getElementById("teleprompterModalOverlay");
+    const teleprompterTitle = document.getElementById("teleprompterTitle");
+    const teleprompterFormat = document.getElementById("teleprompterFormat");
+    const teleprompterHook = document.getElementById("teleprompterHook");
+    const teleprompterScript = document.getElementById("teleprompterScript");
+    const btnTeleprompterSpeak = document.getElementById("btnTeleprompterSpeak");
+    const btnCloseTeleprompter = document.getElementById("btnCloseTeleprompter");
+
+    // Polish Hook Modal DOM
+    const polishModalOverlay = document.getElementById("polishModalOverlay");
+    const closePolishModalBtn = document.getElementById("closePolishModalBtn");
+    const polishVariantsContainer = document.getElementById("polishVariantsContainer");
+
+    // Edit Idea Modal DOM
+    const editModalOverlay = document.getElementById("editModalOverlay");
+    const closeEditModalBtn = document.getElementById("closeEditModalBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const editIdeaForm = document.getElementById("editIdeaForm");
+    const editIdeaId = document.getElementById("editIdeaId");
+    const editTitleInput = document.getElementById("editTitleInput");
+    const editHookInput = document.getElementById("editHookInput");
+    const editDescInput = document.getElementById("editDescInput");
+    const editDialogueInput = document.getElementById("editDialogueInput");
+
     const statusBanner = document.getElementById("statusBanner");
     const statusBannerText = document.getElementById("statusBannerText");
     const newIdeaFormPanel = document.getElementById("newIdeaFormPanel");
@@ -1338,11 +2357,31 @@
     const sortSelect = document.getElementById("sortSelect");
     const pickModalOverlay = document.getElementById("pickModalOverlay");
     const pickModalIdeaTitle = document.getElementById("pickModalIdeaTitle");
-    const pickSashaBtn = document.getElementById("pickSashaBtn");
+    const pickMiaBtn = document.getElementById("pickMiaBtn");
     const pickImaBtn = document.getElementById("pickImaBtn");
     const closePickModalBtn = document.getElementById("closePickModalBtn");
 
-    // Sample Starter Data (Used in preview mode or initial demonstration)
+    // DOM Elements - Gemini Voice Chat
+    const geminiChatToggleBtn = document.getElementById("geminiChatToggleBtn");
+    const geminiChatPanel = document.getElementById("geminiChatPanel");
+    const closeChatBtn = document.getElementById("closeChatBtn");
+    const chatMessagesEl = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
+    const chatSendBtn = document.getElementById("chatSendBtn");
+    const micBtn = document.getElementById("micBtn");
+    const toggleVoiceSpeechBtn = document.getElementById("toggleVoiceSpeechBtn");
+    const voiceToggleIcon = document.getElementById("voiceToggleIcon");
+    const voiceToggleText = document.getElementById("voiceToggleText");
+    const voiceSoundwave = document.getElementById("voiceSoundwave");
+    const stopVoiceBtn = document.getElementById("stopVoiceBtn");
+
+    // Chat conversation history state
+    let chatConversation = [];
+    let autoVoiceEnabled = true;
+    let isListening = false;
+    let speechRecognition = null;
+
+    // Sample Starter Data
     const SEED_IDEAS = [
       {
         id: "demo-1",
@@ -1373,7 +2412,7 @@
         backgroundSetting: "Coffee shop sidewalk patio on a sunny afternoon",
         estimatedViews: 2200000,
         status: "picked",
-        pickedBy: "Sasha",
+        pickedBy: "Mia",
         createdAt: new Date(Date.now() - 3600000 * 6)
       },
       {
@@ -1399,6 +2438,7 @@
      */
     async function init() {
       setupEventListeners();
+      setupGeminiChat();
       
       const isPlaceholder = !firebaseConfig.projectId || 
                             firebaseConfig.projectId === "YOUR_PROJECT_ID" || 
@@ -1413,7 +2453,7 @@
           db = getFirestore(app);
           isLiveFirestore = true;
           
-          showStatusBanner("Connected to live Firestore. Real-time sync is active for Sasha & Ima!", false);
+          showStatusBanner("Connected to live Firestore. Real-time sync is active for Mia & Ima!", false);
           listenToFirestore();
         } catch (err) {
           console.error("Firestore initialization failed:", err);
@@ -1469,7 +2509,7 @@
      * Fallback Demo Store with LocalStorage persistence & simulated onSnapshot
      */
     function initDemoStore() {
-      const saved = localStorage.getItem("sasha_ima_demo_ideas");
+      const saved = localStorage.getItem("mia_ima_demo_ideas");
       if (saved) {
         try {
           ideas = JSON.parse(saved);
@@ -1481,7 +2521,7 @@
         }
       } else {
         ideas = [...SEED_IDEAS];
-        localStorage.setItem("sasha_ima_demo_ideas", JSON.stringify(ideas));
+        localStorage.setItem("mia_ima_demo_ideas", JSON.stringify(ideas));
       }
 
       showStatusBanner(
@@ -1495,7 +2535,7 @@
     }
 
     function saveDemoState() {
-      localStorage.setItem("sasha_ima_demo_ideas", JSON.stringify(ideas));
+      localStorage.setItem("mia_ima_demo_ideas", JSON.stringify(ideas));
       updateNicheDropdown();
       updateCounts();
       renderCards();
@@ -1546,8 +2586,43 @@
         renderCards();
       });
 
+      // View Mode Toggle (Feed vs Kanban Board)
+      viewFeedBtn.addEventListener("click", () => switchViewMode("feed"));
+      viewKanbanBtn.addEventListener("click", () => switchViewMode("kanban"));
+
+      // Export Brief
+      exportBriefBtn.addEventListener("click", exportIdeasBrief);
+
+      // AI Auto-Draft Button
+      btnAiDraft.addEventListener("click", handleAiDraftSubmit);
+      aiTopicInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleAiDraftSubmit();
+        }
+      });
+
+      // Teleprompter Controls
+      btnCloseTeleprompter.addEventListener("click", closeTeleprompter);
+      btnTeleprompterSpeak.addEventListener("click", () => {
+        if (activeTeleprompterIdea) {
+          speakText(activeTeleprompterIdea.hook + ". " + (activeTeleprompterIdea.dialogueOutline || ""));
+        }
+      });
+
+      // Polish Modal Controls
+      closePolishModalBtn.addEventListener("click", closePolishModal);
+      polishModalOverlay.addEventListener("click", (e) => {
+        if (e.target === polishModalOverlay) closePolishModal();
+      });
+
+      // Edit Modal Controls
+      closeEditModalBtn.addEventListener("click", closeEditModal);
+      cancelEditBtn.addEventListener("click", closeEditModal);
+      editIdeaForm.addEventListener("submit", handleEditFormSubmit);
+
       // Pick Modal Actions
-      pickSashaBtn.addEventListener("click", () => confirmPick("Sasha"));
+      pickMiaBtn.addEventListener("click", () => confirmPick("Mia"));
       pickImaBtn.addEventListener("click", () => confirmPick("Ima"));
       closePickModalBtn.addEventListener("click", closePickModal);
       pickModalOverlay.addEventListener("click", (e) => {
@@ -1737,13 +2812,12 @@
     };
 
     /**
-     * UPDATE NICHE DROPDOWN (Dynamically populated from data)
+     * UPDATE NICHE DROPDOWN
      */
     function updateNicheDropdown() {
       const currentSelected = nicheSelect.value;
       const niches = new Set();
       
-      // Default common suggestions
       ["Health", "Comedy", "Drama", "Tech", "Finance", "Beauty", "Lifestyle"].forEach(n => niches.add(n));
       
       ideas.forEach(i => {
@@ -1767,7 +2841,7 @@
     }
 
     /**
-     * UPDATE FILTER TAB COUNTS
+     * UPDATE METRICS & FILTER TAB COUNTS
      */
     function updateCounts() {
       document.getElementById("countAll").textContent = ideas.length;
@@ -1775,26 +2849,49 @@
       document.getElementById("countPicked").textContent = ideas.filter(i => i.status === "picked").length;
       document.getElementById("countInProduction").textContent = ideas.filter(i => i.status === "in_production").length;
       document.getElementById("countDone").textContent = ideas.filter(i => i.status === "done").length;
+
+      updateMetrics();
+    }
+
+    function updateMetrics() {
+      const inProd = ideas.filter(i => i.status === "in_production").length;
+      const done = ideas.filter(i => i.status === "done").length;
+      const totalViews = ideas.reduce((sum, i) => sum + (Number(i.estimatedViews) || 0), 0);
+      const miaCount = ideas.filter(i => i.pickedBy === "Mia").length;
+      const imaCount = ideas.filter(i => i.pickedBy === "Ima").length;
+
+      metricTotalIdeas.textContent = ideas.length;
+      metricInProduction.textContent = inProd;
+      metricCompleted.textContent = done;
+      metricTotalViews.textContent = formatViews(totalViews) + " est.";
+      metricOwnershipRatio.textContent = `${miaCount} Mia / ${imaCount} Ima`;
     }
 
     /**
-     * RENDER CARDS LIST
+     * SWITCH VIEW MODE (Feed vs Kanban Board)
+     */
+    window.switchViewMode = function(mode) {
+      currentViewMode = mode;
+      viewFeedBtn.classList.toggle("active", mode === "feed");
+      viewKanbanBtn.classList.toggle("active", mode === "kanban");
+      renderCards();
+    };
+
+    /**
+     * RENDER CARDS (Supports Feed & Kanban Modes)
      */
     function renderCards() {
-      // 1. Filter by Status
       let filtered = ideas.filter(item => {
         if (currentFilterStatus === "all") return true;
         return item.status === currentFilterStatus;
       });
 
-      // 2. Filter by Niche
       if (currentNiche !== "all") {
         filtered = filtered.filter(item => {
           return (item.niche || "").toLowerCase() === currentNiche.toLowerCase();
         });
       }
 
-      // 3. Filter by Search Query
       if (currentSearchTerm) {
         filtered = filtered.filter(item => {
           const matchTitle = (item.title || "").toLowerCase().includes(currentSearchTerm);
@@ -1807,18 +2904,26 @@
         });
       }
 
-      // 4. Sort
       filtered.sort((a, b) => {
         if (currentSort === "views_desc") {
           return (b.estimatedViews || 0) - (a.estimatedViews || 0);
         }
-        // Default newest first
         const timeA = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt || 0).getTime();
         const timeB = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt || 0).getTime();
         return timeB - timeA;
       });
 
-      // Render Empty State if no items
+      if (currentViewMode === "kanban") {
+        cardsListEl.style.display = "none";
+        kanbanBoardEl.style.display = "grid";
+        renderKanban(filtered);
+        return;
+      }
+
+      // Default Feed List View
+      cardsListEl.style.display = "flex";
+      kanbanBoardEl.style.display = "none";
+
       if (filtered.length === 0) {
         cardsListEl.innerHTML = `
           <div class="empty-state">
@@ -1837,8 +2942,71 @@
         return;
       }
 
-      // Render list of cards
       cardsListEl.innerHTML = filtered.map(idea => renderCard(idea)).join("");
+    }
+
+    /**
+     * RENDER KANBAN PIPELINE BOARD
+     */
+    function renderKanban(filteredIdeas) {
+      const columns = [
+        { id: "pending", title: "Pending", color: "text-zinc-400", badgeClass: "status-pending" },
+        { id: "picked", title: "Picked", color: "text-cyan-400", badgeClass: "status-picked" },
+        { id: "in_production", title: "In Production", color: "text-amber-400", badgeClass: "status-in_production" },
+        { id: "done", title: "Done", color: "text-emerald-400", badgeClass: "status-done" }
+      ];
+
+      kanbanBoardEl.innerHTML = columns.map(col => {
+        const colIdeas = filteredIdeas.filter(i => i.status === col.id);
+        const cardsHtml = colIdeas.length === 0 
+          ? `<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 24px 8px; border: 1px dashed var(--border-subtle); border-radius: 8px;">No ideas</div>`
+          : colIdeas.map(idea => {
+              const safeId = escapeHtml(idea.id);
+              const viewsBadge = idea.estimatedViews ? `<span class="tag-pill tag-views" style="font-size: 10px;">🔥 ${formatViews(idea.estimatedViews)}</span>` : "";
+              const ownerBadge = idea.pickedBy ? `<span class="picked-by-pill" style="font-size: 10px; padding: 1px 6px;">👤 ${escapeHtml(idea.pickedBy)}</span>` : "";
+              
+              let quickAdvance = "";
+              if (idea.status === "pending") {
+                quickAdvance = `<button class="btn-pick" style="font-size: 10px; padding: 2px 6px;" onclick="quickPick('${safeId}', 'Mia', event)">+ Mia</button>
+                                <button class="btn-pick" style="font-size: 10px; padding: 2px 6px;" onclick="quickPick('${safeId}', 'Ima', event)">+ Ima</button>`;
+              } else if (idea.status === "picked") {
+                quickAdvance = `<button class="btn-status-advance btn-in_production" style="font-size: 10px; padding: 2px 6px;" onclick="updateIdeaStatus('${safeId}', 'in_production')">➔ In Prod</button>`;
+              } else if (idea.status === "in_production") {
+                quickAdvance = `<button class="btn-status-advance btn-mark-done" style="font-size: 10px; padding: 2px 6px;" onclick="updateIdeaStatus('${safeId}', 'done')">➔ Done</button>`;
+              }
+
+              return `
+                <div class="kanban-card" onclick="openTeleprompter('${safeId}', event)">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px;">
+                    <span class="tag-pill tag-niche" style="font-size: 10px;">${escapeHtml(idea.niche || 'Trend')}</span>
+                    ${viewsBadge}
+                  </div>
+                  <div class="kanban-card-title">${escapeHtml(idea.title)}</div>
+                  ${idea.hook ? `<div class="kanban-card-hook">"${escapeHtml(idea.hook)}"</div>` : ''}
+                  <div class="kanban-card-footer">
+                    <div>${ownerBadge}</div>
+                    <div style="display: flex; gap: 4px;" onclick="event.stopPropagation()">
+                      ${quickAdvance}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join("");
+
+        return `
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">
+                <span class="status-badge ${col.badgeClass}" style="padding: 2px 6px; font-size: 10px;">● ${col.title}</span>
+              </span>
+              <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">${colIdeas.length}</span>
+            </div>
+            <div class="kanban-cards-wrap">
+              ${cardsHtml}
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     /**
@@ -1850,7 +3018,6 @@
       const formattedDate = formatDate(idea.createdAt);
       const safeId = escapeHtml(idea.id);
 
-      // Status labels & badges
       const statusLabels = {
         pending: "Pending",
         picked: "Picked",
@@ -1863,20 +3030,18 @@
         </span>
       `;
 
-      // Picked By pill
       const pickedByPill = idea.pickedBy ? `
         <span class="picked-by-pill">
           👤 ${escapeHtml(idea.pickedBy)}
         </span>
       ` : "";
 
-      // Quick action controls depending on status
       let actionButtons = "";
       if (idea.status === "pending") {
         actionButtons = `
           <div class="pick-buttons-wrap" onclick="event.stopPropagation()">
             <span class="pick-label">Pick as:</span>
-            <button class="btn-pick" onclick="quickPick('${safeId}', 'Sasha', event)">Sasha</button>
+            <button class="btn-pick" onclick="quickPick('${safeId}', 'Mia', event)">Mia</button>
             <button class="btn-pick" onclick="quickPick('${safeId}', 'Ima', event)">Ima</button>
           </div>
         `;
@@ -1918,7 +3083,6 @@
 
       return `
         <article class="idea-card ${isExpanded ? 'is-expanded' : ''}" id="card-${safeId}">
-          <!-- Collapsed Card Header -->
           <div class="card-header" onclick="toggleCardExpand('${safeId}')">
             <div class="card-topline">
               <div class="tags-cluster">
@@ -1937,7 +3101,6 @@
 
             ${idea.description ? `<p class="card-summary-desc">${escapeHtml(idea.description)}</p>` : ''}
 
-            <!-- Quick Action Toolbar -->
             <div class="card-quick-actions" onclick="event.stopPropagation()">
               <div class="action-group">
                 ${actionButtons}
@@ -1946,18 +3109,18 @@
             </div>
           </div>
 
-          <!-- Expanded View Details -->
           <div class="card-body">
-            <!-- 2-Second Hook Highlight -->
             <div class="hook-callout">
               <div class="hook-header">
                 <span class="hook-badge">⚡ First 2-Second Hook</span>
-                <button class="btn-copy" onclick="copyHook('${escapeJsString(idea.hook || '')}', this, event)">Copy Hook</button>
+                <div style="display: flex; gap: 6px;">
+                  <button class="btn-copy" onclick="openPolishHookModal('${safeId}', event)">✨ Refine Hook</button>
+                  <button class="btn-copy" onclick="copyHook('${escapeJsString(idea.hook || '')}', this, event)">Copy Hook</button>
+                </div>
               </div>
               <div class="hook-content">"${escapeHtml(idea.hook || 'No hook provided.')}"</div>
             </div>
 
-            <!-- Dialogue / Script Beats -->
             ${idea.dialogueOutline ? `
               <div class="detail-section">
                 <div class="detail-heading">🎬 Dialogue Outline & Script Beats</div>
@@ -1965,7 +3128,6 @@
               </div>
             ` : ''}
 
-            <!-- Production Specifications Grid -->
             <div class="detail-grid">
               <div class="mini-spec">
                 <div class="mini-spec-label">Characters & Personas</div>
@@ -1978,6 +3140,19 @@
               <div class="mini-spec">
                 <div class="mini-spec-label">Background & Setting</div>
                 <div class="mini-spec-val">${escapeHtml(idea.backgroundSetting || 'Studio / flexible')}</div>
+              </div>
+            </div>
+
+            <!-- Card Production & Management Toolbar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="openTeleprompter('${safeId}', event)">📜 Teleprompter</button>
+                <button class="btn btn-secondary btn-sm" onclick="openPolishHookModal('${safeId}', event)">✨ Polish with Gemini</button>
+                <button class="btn btn-secondary btn-sm" onclick="copyProductionBrief('${safeId}', event)">📋 Copy Brief</button>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm" onclick="openEditModal('${safeId}', event)">✏️ Edit</button>
+                <button class="btn btn-secondary btn-sm" style="color: #f87171;" onclick="deleteIdea('${safeId}', event)">🗑️ Delete</button>
               </div>
             </div>
           </div>
@@ -1999,6 +3174,565 @@
       });
       renderCards();
     };
+
+    /**
+     * =========================================================================
+     * AI AUTO-DRAFT, TELEPROMPTER, POLISH HOOK & PRODUCTION HELPERS
+     * =========================================================================
+     */
+    async function handleAiDraftSubmit() {
+      const topic = aiTopicInput.value.trim();
+      if (!topic) {
+        showToast("Please enter a rough concept or topic first!");
+        return;
+      }
+
+      btnAiDraft.disabled = true;
+      btnAiDraft.textContent = "✨ Drafting with Gemini...";
+
+      try {
+        const res = await fetch("/api/generate-idea", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            topic,
+            niche: document.getElementById("nicheInput").value.trim(),
+            format: document.getElementById("formatInput").value.trim()
+          })
+        });
+
+        if (!res.ok) throw new Error("Failed to generate with AI");
+        const data = await res.json();
+
+        if (data.title) document.getElementById("titleInput").value = data.title;
+        if (data.format) document.getElementById("formatInput").value = data.format;
+        if (data.niche) document.getElementById("nicheInput").value = data.niche;
+        if (data.description) document.getElementById("descriptionInput").value = data.description;
+        if (data.hook) document.getElementById("hookInput").value = data.hook;
+        if (data.dialogueOutline) document.getElementById("dialogueOutlineInput").value = data.dialogueOutline;
+        if (data.characters) document.getElementById("charactersInput").value = data.characters;
+        if (data.cameraNotes) document.getElementById("cameraNotesInput").value = data.cameraNotes;
+        if (data.backgroundSetting) document.getElementById("backgroundSettingInput").value = data.backgroundSetting;
+        if (data.estimatedViews) document.getElementById("estimatedViewsInput").value = data.estimatedViews;
+
+        showToast("✨ Gemini engineered your viral trend draft!");
+      } catch (err) {
+        console.error("AI Draft error:", err);
+        showToast("AI Auto-Draft failed: " + err.message);
+      } finally {
+        btnAiDraft.disabled = false;
+        btnAiDraft.textContent = "✨ Auto-Draft";
+      }
+    }
+
+    /**
+     * TELEPROMPTER FULLSCREEN SCRIPT MODE
+     */
+    window.openTeleprompter = function(id, event) {
+      if (event) event.stopPropagation();
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      activeTeleprompterIdea = idea;
+      teleprompterTitle.textContent = idea.title;
+      teleprompterFormat.textContent = (idea.niche ? idea.niche + " • " : "") + (idea.format || "");
+      teleprompterHook.textContent = `"${idea.hook || 'No hook defined.'}"`;
+      teleprompterScript.textContent = idea.dialogueOutline || "No script beats logged for this idea.";
+
+      teleprompterModalOverlay.classList.add("active");
+    };
+
+    function closeTeleprompter() {
+      activeTeleprompterIdea = null;
+      stopSpeaking();
+      teleprompterModalOverlay.classList.remove("active");
+    }
+
+    /**
+     * POLISH HOOK WITH GEMINI
+     */
+    window.openPolishHookModal = async function(id, event) {
+      if (event) event.stopPropagation();
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      activePolishIdea = idea;
+      polishVariantsContainer.innerHTML = `
+        <div style="text-align: center; color: var(--text-muted); padding: 30px;">
+          <div style="font-size: 24px; margin-bottom: 8px;">✨</div>
+          Gemini is analyzing viral hold-rate patterns for this hook...
+        </div>
+      `;
+      polishModalOverlay.classList.add("active");
+
+      try {
+        const res = await fetch("/api/refine-hook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            hook: idea.hook,
+            format: idea.format,
+            niche: idea.niche
+          })
+        });
+
+        if (!res.ok) throw new Error("Failed to refine hook");
+        const data = await res.json();
+
+        const variants = [
+          { label: "Pattern Interrupt (High Shock)", text: data.patternInterrupt },
+          { label: "Curiosity Gap (High Retention)", text: data.curiosityGap },
+          { label: "High Stakes / Contrarian", text: data.highStakes }
+        ];
+
+        polishVariantsContainer.innerHTML = variants.map(v => `
+          <div class="hook-variant-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="hook-variant-badge">${escapeHtml(v.label)}</span>
+              <button class="btn btn-primary btn-sm" onclick="applyPolishedHook('${escapeJsString(v.text)}')">Apply to Card</button>
+            </div>
+            <div class="hook-variant-text">"${escapeHtml(v.text)}"</div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-msg-audio" onclick="speakText('${escapeJsString(v.text)}')">🔊 Listen</button>
+              <button class="btn-msg-audio" onclick="copyHook('${escapeJsString(v.text)}', this)">📋 Copy</button>
+            </div>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error("Hook polish error:", err);
+        polishVariantsContainer.innerHTML = `
+          <div style="color: #f87171; padding: 20px; text-align: center;">
+            Failed to polish hook with Gemini: ${escapeHtml(err.message)}
+          </div>
+        `;
+      }
+    };
+
+    function closePolishModal() {
+      activePolishIdea = null;
+      polishModalOverlay.classList.remove("active");
+    }
+
+    window.applyPolishedHook = async function(newHookText) {
+      if (!activePolishIdea) return;
+      const ideaId = activePolishIdea.id;
+      closePolishModal();
+
+      try {
+        if (isLiveFirestore) {
+          const docRef = doc(db, "trendIdeas", ideaId);
+          await updateDoc(docRef, { hook: newHookText });
+        } else {
+          const idx = ideas.findIndex(i => i.id === ideaId);
+          if (idx !== -1) {
+            ideas[idx].hook = newHookText;
+            saveDemoState();
+          }
+        }
+        showToast("Applied new viral hook!");
+      } catch (err) {
+        showToast("Failed to update hook: " + err.message);
+      }
+    };
+
+    /**
+     * EDIT & DELETE IDEA
+     */
+    window.openEditModal = function(id, event) {
+      if (event) event.stopPropagation();
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      editIdeaId.value = idea.id;
+      editTitleInput.value = idea.title || "";
+      editHookInput.value = idea.hook || "";
+      editDescInput.value = idea.description || "";
+      editDialogueInput.value = idea.dialogueOutline || "";
+
+      editModalOverlay.classList.add("active");
+    };
+
+    function closeEditModal() {
+      editModalOverlay.classList.remove("active");
+    }
+
+    async function handleEditFormSubmit(e) {
+      e.preventDefault();
+      const id = editIdeaId.value;
+      const title = editTitleInput.value.trim();
+      const hook = editHookInput.value.trim();
+      const description = editDescInput.value.trim();
+      const dialogueOutline = editDialogueInput.value.trim();
+
+      try {
+        const payload = { title, hook, description, dialogueOutline };
+        if (isLiveFirestore) {
+          const docRef = doc(db, "trendIdeas", id);
+          await updateDoc(docRef, payload);
+        } else {
+          const idx = ideas.findIndex(i => i.id === id);
+          if (idx !== -1) {
+            Object.assign(ideas[idx], payload);
+            saveDemoState();
+          }
+        }
+        showToast("Trend idea updated!");
+        closeEditModal();
+      } catch (err) {
+        showToast("Update failed: " + err.message);
+      }
+    }
+
+    window.deleteIdea = async function(id, event) {
+      if (event) event.stopPropagation();
+      if (!confirm("Are you sure you want to delete this trend idea?")) return;
+
+      try {
+        if (isLiveFirestore) {
+          const { deleteDoc } = await import("firebase/firestore");
+          await deleteDoc(doc(db, "trendIdeas", id));
+        } else {
+          ideas = ideas.filter(i => i.id !== id);
+          saveDemoState();
+        }
+        showToast("Trend idea deleted.");
+      } catch (err) {
+        showToast("Delete failed: " + err.message);
+      }
+    };
+
+    /**
+     * COPY PRODUCTION BRIEF
+     */
+    window.copyProductionBrief = function(id, event) {
+      if (event) event.stopPropagation();
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      const briefText = `🎬 MIA / IMA PRODUCTION BRIEF: ${idea.title.toUpperCase()}
+FORMAT: ${idea.format || 'Standard'} | NICHE: ${idea.niche || 'General'}
+STATUS: ${idea.status.toUpperCase()} | ASSIGNED TO: ${idea.pickedBy || 'Unassigned'}
+EST. VIEWS: ${formatViews(idea.estimatedViews)}
+
+⚡ 2-SECOND HOOK:
+"${idea.hook || ''}"
+
+📝 CONCEPT PAYOFF:
+${idea.description || ''}
+
+🎭 CHARACTERS / TALENT:
+${idea.characters || 'N/A'}
+
+🎥 CAMERA SHOT LIST:
+${idea.cameraNotes || 'Standard'}
+
+📍 SETTING / BACKDROP:
+${idea.backgroundSetting || 'Studio'}
+
+📜 SCRIPT BEATS:
+${idea.dialogueOutline || 'N/A'}`;
+
+      navigator.clipboard.writeText(briefText).then(() => {
+        showToast("Production brief copied to clipboard!");
+      });
+    };
+
+    /**
+     * EXPORT ALL IDEAS AS JSON
+     */
+    function exportIdeasBrief() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ideas, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `mia_ima_trend_pipeline_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Downloaded pipeline backup JSON!");
+    }
+
+    /**
+     * =========================================================================
+     * GEMINI VOICE INTELLIGENCE & CHATBOT CLIENT LOGIC
+     * =========================================================================
+     */
+    function setupGeminiChat() {
+      // Toggle chat panel open/close
+      geminiChatToggleBtn.addEventListener("click", () => {
+        const isOpen = geminiChatPanel.classList.toggle("active");
+        if (isOpen) {
+          chatInput.focus();
+        } else {
+          stopSpeaking();
+        }
+      });
+
+      closeChatBtn.addEventListener("click", () => {
+        geminiChatPanel.classList.remove("active");
+        stopSpeaking();
+      });
+
+      // Toggle Voice narration
+      toggleVoiceSpeechBtn.addEventListener("click", () => {
+        autoVoiceEnabled = !autoVoiceEnabled;
+        if (autoVoiceEnabled) {
+          toggleVoiceSpeechBtn.classList.add("voice-active");
+          voiceToggleIcon.textContent = "🔊";
+          voiceToggleText.textContent = "Voice On";
+          showToast("Gemini voice narration enabled");
+        } else {
+          toggleVoiceSpeechBtn.classList.remove("voice-active");
+          voiceToggleIcon.textContent = "🔇";
+          voiceToggleText.textContent = "Muted";
+          stopSpeaking();
+          showToast("Gemini voice muted");
+        }
+      });
+
+      stopVoiceBtn.addEventListener("click", stopSpeaking);
+
+      // Chat input handling
+      chatSendBtn.addEventListener("click", sendUserChatMessage);
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendUserChatMessage();
+        }
+      });
+
+      // Suggestion chips
+      document.querySelectorAll(".chip-btn").forEach(chip => {
+        chip.addEventListener("click", () => {
+          chatInput.value = chip.getAttribute("data-prompt");
+          sendUserChatMessage();
+        });
+      });
+
+      // Speech Recognition (Microphone voice input)
+      setupSpeechRecognition();
+    }
+
+    function setupSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        micBtn.style.opacity = "0.5";
+        micBtn.title = "Speech recognition not supported in this browser";
+        micBtn.addEventListener("click", () => {
+          showToast("Speech-to-text is not supported in this browser. Please type your message.");
+        });
+        return;
+      }
+
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = "en-US";
+
+      speechRecognition.onstart = () => {
+        isListening = true;
+        micBtn.classList.add("listening");
+        micBtn.textContent = "🛑";
+        showToast("Listening... speak your question now!");
+      };
+
+      speechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) {
+          chatInput.value = transcript;
+          sendUserChatMessage();
+        }
+      };
+
+      speechRecognition.onerror = (event) => {
+        console.warn("Speech recognition error:", event.error);
+        stopListening();
+      };
+
+      speechRecognition.onend = () => {
+        stopListening();
+      };
+
+      micBtn.addEventListener("click", () => {
+        if (isListening) {
+          speechRecognition.stop();
+          stopListening();
+        } else {
+          try {
+            stopSpeaking();
+            speechRecognition.start();
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      });
+    }
+
+    function stopListening() {
+      isListening = false;
+      micBtn.classList.remove("listening");
+      micBtn.textContent = "🎤";
+    }
+
+    /**
+     * Send user chat message to Gemini backend API (/api/chat)
+     */
+    async function sendUserChatMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      chatInput.value = "";
+      chatSendBtn.disabled = true;
+
+      // Add user message to UI
+      appendChatMessage("user", text);
+      chatConversation.push({ role: "user", content: text });
+
+      // Add temporary loading indicator
+      const loadingMsgEl = appendChatLoading();
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: chatConversation,
+            systemInstruction: "You are the creative director and viral development copilot for Mia and Ima on their trend intelligence platform (MIA / IMA — Trend Picker). You help them develop hooks, script dialogue beats, analyze viral formats, brainstorm camera angles, optimize retention, and solve creative or technical development questions. Be sharp, concise, energetic, and highly actionable. Keep responses conversational and punchy so they sound great when read aloud by voice."
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        const replyText = data.reply || "I didn't receive a response. Try asking in another way!";
+
+        // Remove loading and append assistant reply
+        loadingMsgEl.remove();
+        appendChatMessage("assistant", replyText);
+        chatConversation.push({ role: "assistant", content: replyText });
+
+        // Speak response aloud if voice enabled
+        if (autoVoiceEnabled) {
+          speakText(replyText);
+        }
+
+      } catch (err) {
+        console.error("Gemini Chat Error:", err);
+        loadingMsgEl.remove();
+        appendChatMessage("assistant", "⚠️ Sorry, I ran into an issue communicating with Gemini: " + err.message + ". Please verify GEMINI_API_KEY in the server environment.");
+      } finally {
+        chatSendBtn.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    function appendChatMessage(role, content) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `chat-msg ${role}`;
+
+      const senderSpan = document.createElement("span");
+      senderSpan.className = "msg-sender";
+      senderSpan.textContent = role === "user" ? "👤 Mia / Ima" : "✨ Gemini";
+
+      const bubbleDiv = document.createElement("div");
+      bubbleDiv.className = "msg-bubble";
+      bubbleDiv.textContent = content;
+
+      msgDiv.appendChild(senderSpan);
+      msgDiv.appendChild(bubbleDiv);
+
+      if (role === "assistant") {
+        const actionsDiv = document.createElement("div");
+        actionsDiv.className = "msg-actions";
+        
+        const audioBtn = document.createElement("button");
+        audioBtn.className = "btn-msg-audio";
+        audioBtn.innerHTML = "🔊 Listen";
+        audioBtn.onclick = () => speakText(content);
+        
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "btn-msg-audio";
+        copyBtn.innerHTML = "📋 Copy";
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(content);
+          copyBtn.textContent = "Copied! ✓";
+          setTimeout(() => { copyBtn.textContent = "📋 Copy"; }, 1500);
+        };
+
+        actionsDiv.appendChild(audioBtn);
+        actionsDiv.appendChild(copyBtn);
+        msgDiv.appendChild(actionsDiv);
+      }
+
+      chatMessagesEl.appendChild(msgDiv);
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      return msgDiv;
+    }
+
+    function appendChatLoading() {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "chat-msg assistant";
+      msgDiv.innerHTML = `
+        <span class="msg-sender">✨ Gemini is thinking...</span>
+        <div class="msg-bubble" style="color: var(--text-muted); font-style: italic;">
+          Analyzing trend intelligence & formulating response...
+        </div>
+      `;
+      chatMessagesEl.appendChild(msgDiv);
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      return msgDiv;
+    }
+
+    /**
+     * Speech Synthesis (Gemini Voice intelligence)
+     */
+    window.speakText = function(textToSpeak) {
+      if (!window.speechSynthesis) {
+        showToast("Voice speech is not supported in this browser.");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      // Clean markdown stars/hashtags for cleaner speech
+      const cleaned = textToSpeak
+        .replace(/[*#_`~>]/g, "")
+        .replace(/\n+/g, ". ");
+
+      const utterance = new SpeechSynthesisUtterance(cleaned);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+
+      // Select natural sounding voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const naturalVoice = voices.find(v => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Ava")));
+      if (naturalVoice) {
+        utterance.voice = naturalVoice;
+      }
+
+      utterance.onstart = () => {
+        voiceSoundwave.classList.add("active");
+      };
+
+      utterance.onend = () => {
+        voiceSoundwave.classList.remove("active");
+      };
+
+      utterance.onerror = () => {
+        voiceSoundwave.classList.remove("active");
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    function stopSpeaking() {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      voiceSoundwave.classList.remove("active");
+    }
 
     /**
      * FORMATTERS & UTILITIES
