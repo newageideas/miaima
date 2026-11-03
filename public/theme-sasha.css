@@ -1,0 +1,54 @@
+/* =====================================================================
+   Purple theme layer — Theme by Sasha (Sasha Mai Hernandez).
+   Loaded AFTER the app's own styles. Adapted to the site's real classes:
+   .idea-card / .metric-card / .form-panel / .kanban-col (cards),
+   .btn-primary (primary buttons), .slash/.pill-tag (accents), Mia chat bubble.
+   ===================================================================== */
+:root{
+  --bg-dark:#080611;--bg-purple:#120a24;--purple:#9b65ff;--purple-light:#bd91ff;--purple-glow:rgba(155,101,255,.22);
+  /* map onto the app's existing variables so every component follows */
+  --bg-main:#080611;--bg-card:rgba(12,9,23,.88);--bg-card-hover:rgba(20,13,38,.92);--bg-card-expanded:rgba(16,11,30,.92);
+  --bg-surface:#160d2b;--border-subtle:rgba(170,115,255,.22);--border-highlight:rgba(189,145,255,.45);
+  --text-primary:#f5efff;--text-secondary:#c4b5e0;--text-muted:#9a8bb8; /* kept ≥4.5:1 on the dark purple bg */
+  --accent-cyan:#bd91ff;--accent-indigo:#9b65ff;--accent-purple:#b58aff;
+  --status-picked-text:#c9a6ff;--status-picked-bg:#9b65ff26;--status-picked-border:#9b65ff66;
+}
+body{
+  background:radial-gradient(ellipse at 50% 15%,rgba(91,43,160,.22),transparent 55%),radial-gradient(ellipse at 15% 65%,rgba(104,54,173,.15),transparent 50%),radial-gradient(ellipse at 85% 85%,rgba(123,65,210,.14),transparent 45%),linear-gradient(145deg,#080611,#10091e,#080611);
+  background-attachment:fixed;color:#f5efff;position:relative;isolation:isolate;overflow-x:hidden;
+}
+/* let Sasha's gradient show through the existing animated galaxy canvas */
+.galaxy-canvas{background:transparent!important;opacity:.75}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 10% 35%,rgba(148,79,255,.12),transparent 40%),radial-gradient(ellipse at 90% 60%,rgba(111,61,210,.13),transparent 42%);filter:blur(35px)}
+body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 0% 45%,transparent 55%,rgba(153,92,255,.13) 56%,transparent 58%),radial-gradient(ellipse at 100% 75%,transparent 55%,rgba(153,92,255,.12) 56%,transparent 58%);opacity:.7}
+
+.idea-card,.metric-card,.form-panel,.kanban-col,.card{
+  background:rgba(12,9,23,.88);border:1px solid rgba(170,115,255,.32);border-radius:18px;
+  box-shadow:0 4px 25px rgba(91,43,160,.10);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+.idea-card:hover{border-color:rgba(189,145,255,.55)}
+button,.btn{transition:box-shadow .25s ease,border-color .25s ease,background .25s ease,transform .25s ease}
+button:hover,.btn:hover{box-shadow:0 0 18px var(--purple-glow);border-color:var(--purple-light)}
+.btn-primary,button.primary,.primary-button,.btn-chat-send{
+  background:linear-gradient(120deg,#7138db,#985cff)!important;border:1px solid #b58aff;color:#fff;box-shadow:0 0 20px rgba(155,101,255,.22);
+}
+h1,h2,h3{color:#eee3ff}
+.accent,.wordmark .slash{color:#b58aff}
+.wordmark .slash{text-shadow:0 0 12px rgba(181,138,255,.6)}
+.wordmark .pill-tag{background:linear-gradient(135deg,#7138db33,#985cff33);border-color:#9b65ff66;color:#d9c2ff}
+
+/* keep Mia's chat bubble + Code notes button in the same purple family */
+.chat-floating-btn{background:linear-gradient(135deg,#7138db,#b58aff)!important;box-shadow:0 8px 24px rgba(155,101,255,.45),0 0 0 1px rgba(189,145,255,.35)!important}
+.gemini-chat-panel{border-color:rgba(170,115,255,.32)!important}
+.cn-fab{background:linear-gradient(135deg,#7138db,#985cff);border-color:#b58aff99}
+
+/* Sasha's decorative drops (3 divs in .sasha-drops). Hidden on small screens so they never cover content. */
+.sasha-drops{position:fixed;inset:0;pointer-events:none;z-index:0}
+.cursor-drop{position:fixed;top:0;width:9px;height:20px;border-radius:50% 50% 55% 55%;background:linear-gradient(180deg,#d9c2ff,#985cff 55%,#5725a5);box-shadow:0 0 12px rgba(166,107,255,.55);opacity:.55;pointer-events:none;z-index:0;animation:sashaFloat 6s ease-in-out infinite}
+.cursor-drop:nth-child(1){left:8%;top:12%;transform:scale(.7)}
+.cursor-drop:nth-child(2){left:91%;top:25%;transform:scale(.9);animation-delay:-2s}
+.cursor-drop:nth-child(3){left:76%;top:72%;transform:scale(.55);animation-delay:-4s}
+@keyframes sashaFloat{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@media (max-width:640px){.sasha-drops{display:none}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.app-container{position:relative;z-index:1}
