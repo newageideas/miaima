@@ -77,3 +77,28 @@ h1,h2,h3{color:#eee3ff}
 body.lq-cruise .lq-left{animation-duration:40s}body.lq-cruise .lq-right{animation-duration:46s}
 @media (max-width:640px){.lq-silk{width:40vw;opacity:.7}.lq-silk path{filter:none}.lq-drips{width:26vw}.lq-water{height:14vh}}
 @media (prefers-reduced-motion: reduce){.liquid-bg *{animation:none!important}.lq-fall{opacity:.9}.lq-ripples .rp{stroke-opacity:.35}.lq-ripples .r2{transform:scale(1.8)}.lq-ripples .r3{transform:scale(2.8);stroke-opacity:.15}}
+
+/* ---------- v2: more visible, faster flowing waves ---------- */
+.lq-mid{left:0;top:0;width:200%;height:100%;opacity:.9}
+.lq-flow{animation:lqFlow 10s linear infinite;will-change:transform}
+.lq-flow.lq-rev{animation-name:lqFlowRev}
+.lq-flow path{filter:drop-shadow(0 0 4px rgba(189,145,255,.6))}
+@keyframes lqFlow{from{transform:translate3d(0,0,0)}to{transform:translate3d(-400px,0,0)}}
+@keyframes lqFlowRev{from{transform:translate3d(-400px,0,0)}to{transform:translate3d(0,0,0)}}
+.lq-mid{animation:lqSway 9s ease-in-out infinite alternate}
+@keyframes lqSway{from{transform:translate3d(0,-14px,0)}to{transform:translate3d(-30px,16px,0)}}
+.lq-left{animation:lqDriftL 7s ease-in-out infinite alternate}
+.lq-right{animation:lqDriftR 8s ease-in-out infinite alternate}
+@keyframes lqDriftL{from{transform:translate3d(-14px,0,0) skewY(0)}to{transform:translate3d(22px,-26px,0) skewY(-4deg)}}
+@keyframes lqDriftR{from{transform:translate3d(14px,0,0) skewY(0)}to{transform:translate3d(-22px,24px,0) skewY(4deg)}}
+.lq-fall{animation:lqFall 3.6s cubic-bezier(.55,0,.9,.5) infinite}
+.lq-fall.f2{animation-delay:-1.2s;animation-duration:4.4s}.lq-fall.f3{animation-delay:-2.1s;animation-duration:3.9s}.lq-fall.f4{animation-delay:-3s;animation-duration:4.8s}
+@keyframes lqFall{0%,35%{transform:translateY(0) scale(.6);opacity:0}42%{opacity:1;transform:translateY(0) scale(1)}100%{transform:translateY(90px) scale(1.05);opacity:0}}
+.lq-ripples .rp{animation-duration:3.6s}.lq-ripples .r2{animation-delay:1.2s}.lq-ripples .r3{animation-delay:2.4s}
+.lq-dots ellipse{transform-box:fill-box;transform-origin:center;animation:lqBob 6s ease-in-out infinite alternate}
+.lq-dots ellipse:nth-child(2n){animation-duration:8s;animation-delay:-3s}
+.lq-dots ellipse:nth-child(3n){animation-duration:7s;animation-delay:-1.5s}
+@keyframes lqBob{from{transform:translateY(-6px)}to{transform:translateY(8px)}}
+body.lq-cruise .lq-flow{animation-duration:24s!important}body.lq-cruise .lq-mid{animation-duration:20s}
+@media (max-width:640px){.lq-mid{opacity:.75}.lq-flow path{filter:none}}
+@media (prefers-reduced-motion: reduce){.liquid-bg *, .lq-mid{animation:none!important}}
