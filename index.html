@@ -2526,7 +2526,17 @@
       <button class="chip-btn" data-prompt="Punch up a 2-second viral hook for an organic vs lab food test">⚡ Hook Ideas</button>
       <button class="chip-btn" data-prompt="Give me 3 viral camera angles for high retention TikToks">🎬 Camera Angles</button>
       <button class="chip-btn" data-prompt="Outline dialogue beats for a rich CEO reveal format">🎭 Script Outline</button>
+      <button class="chip-btn" data-prompt="Edit the page: give the header a warmer pink and gold accent theme and make the tagline say 'Viral ideas, picked together.'">🎨 Edit Page</button>
       <button class="chip-btn" id="chipMemoryNotes">🧠 What Mia Learned</button>
+    </div>
+
+    <div class="mia-edit-bar" id="miaEditBar">
+      <span>✏️ Page edits: <strong id="miaEditCount">0</strong></span>
+      <button type="button" id="miaUndoBtn" class="btn-msg-audio" disabled>↶ Undo</button>
+      <button type="button" id="miaExportBtn" class="btn-msg-audio">⬇ Export</button>
+      <button type="button" id="miaResetBtn" class="btn-msg-audio">⟲ Reset</button>
+      <button type="button" id="miaPasteBtn" class="btn-msg-audio">📋 Paste code</button>
+      <a href="/notes.html" class="btn-msg-audio" style="text-decoration:none">📥 Code notes</a>
     </div>
 
     <!-- Chat Input Area -->
@@ -4017,6 +4027,13 @@ ${idea.dialogueOutline || 'N/A'}`;
       stopVoiceBtn.addEventListener("click", stopSpeaking);
 
       // Chat input handling
+      try {
+        const saved = JSON.parse(sessionStorage.getItem("mia_chat_session") || "[]");
+        if (Array.isArray(saved) && saved.length) {
+          chatConversation = saved;
+          saved.forEach(m => appendChatMessage(m.role === "user" ? "user" : "assistant", m.content));
+        }
+      } catch {}
       chatSendBtn.addEventListener("click", sendUserChatMessage);
       chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -4311,37 +4328,49 @@ ${idea.dialogueOutline || 'N/A'}`;
       const loadingMsgEl = appendChatLoading();
 
       try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: chatConversation,
-            adaptiveMemory: getAdaptiveMemory().join("\n- ")
-          })
-        });
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 30000);
+        let res;
+        try {
+          res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            signal: ctl.signal,
+            body: JSON.stringify({
+              messages: chatConversation.slice(-24),
+              adaptiveMemory: getAdaptiveMemory().join("\n- "),
+              pageContext: window.MiaEditor ? window.MiaEditor.context() : null
+            })
+          });
+        } finally { clearTimeout(timer); }
 
+        const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || `HTTP ${res.status}`);
+          const e = new Error(data.error || `HTTP ${res.status}`); e.code = data.code; throw e;
         }
+        const replyText = data.reply || "I didn't catch that — try asking another way!";
 
-        const data = await res.json();
-        const replyText = data.reply || "I didn't receive a response. Try asking in another way!";
-
-        // Remove loading and append assistant reply
         loadingMsgEl.remove();
-        appendChatMessage("assistant", replyText);
+        const msgEl = appendChatMessage("assistant", replyText);
         chatConversation.push({ role: "assistant", content: replyText });
+        if (window.MiaEditor && Array.isArray(data.actions) && data.actions.length) {
+          window.MiaEditor.preview(data.actions, msgEl);
+        }
+        try { sessionStorage.setItem("mia_chat_session", JSON.stringify(chatConversation.slice(-30))); } catch {}
 
-        // Speak response aloud if voice enabled
         if (autoVoiceEnabled) {
           speakText(replyText);
         }
 
       } catch (err) {
-        console.error("Mia Chat Error:", err);
+        console.warn("Mia Chat Error:", err);
         loadingMsgEl.remove();
-        appendChatMessage("assistant", "⚠️ Sorry, I ran into an issue communicating with Gemini: " + err.message + ". Please verify GEMINI_API_KEY in the server environment.");
+        let msg = "⚠️ I hit a snag reaching my brain — please try again in a moment.";
+        if (err.name === "AbortError") msg = "⏱️ That took too long, so I stopped waiting. Try again or ask something shorter.";
+        else if (err.code === "NO_AI_KEY") msg = "🔑 My AI key isn't set up on this deployment yet (GEMINI_API_KEY). Page edits from the toolbar still work.";
+        else if (!navigator.onLine) msg = "📡 You look offline — reconnect and I'll pick right back up.";
+        appendChatMessage("assistant", msg);
+        chatConversation.pop();
       } finally {
         chatSendBtn.disabled = false;
         chatInput.focus();
@@ -4721,6 +4750,7 @@ ${idea.dialogueOutline || 'N/A'}`;
         .replace(/\r/g, "");
     }
 
+    window.showToast = (m) => showToast(m);
     function showToast(message) {
       const container = document.getElementById("toastContainer");
       const toast = document.createElement("div");
@@ -4882,5 +4912,6 @@ ${idea.dialogueOutline || 'N/A'}`;
     // Start App
     window.addEventListener("DOMContentLoaded", init);
   </script>
+  <script src="/mia-editor.js" defer></script>
 </body>
 </html>
