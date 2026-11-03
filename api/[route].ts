@@ -2,8 +2,8 @@
 // /api/refine-hook, /api/tts, /api/health. (server.ts stays for AI Studio / local dev.)
 import { GoogleGenAI } from '@google/genai';
 
-const TEXT_MODELS = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-3.8-flash'];
-const GATEWAY_MODEL = 'google/gemini-2.5-flash';
+const TEXT_MODELS = (process.env.MIA_MODELS || 'gemini-flash-latest,gemini-3.8-flash,gemini-flash-lite-latest').split(',').map(s => s.trim()).filter(Boolean);
+const GATEWAY_MODEL = process.env.MIA_GATEWAY_MODEL || 'google/gemini-3-flash';
 
 function geminiKey(): string | undefined {
   const k = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.API_KEY9;
@@ -34,7 +34,7 @@ async function generate(req: any, opts: { system?: string; contents: any; json?:
           config: { ...(opts.system ? { systemInstruction: opts.system } : {}), ...(opts.json ? { responseMimeType: 'application/json' } : {}) },
         }), 12000, model);
         if (r?.text) return r.text;
-      } catch (e: any) { errors.push(`${model}: ${e?.message || e}`.slice(0, 200)); }
+      } catch (e: any) { errors.push(`${model}: ${e?.message || e}`.slice(0, 400)); }
     }
   }
   const tok = gatewayToken(req);
@@ -132,6 +132,10 @@ export default async function handler(req: any, res: any) {
   const route = String(req.query?.route || '').replace(/\/$/, '');
   res.setHeader('Cache-Control', 'no-store');
   if (route === 'health') {
+    if (req.query?.models && geminiKey()) {
+      try { const out: string[] = []; const pager: any = await ai().models.list(); for await (const m of pager) { if (/gemini/.test(m.name || '')) out.push(m.name); } return res.status(200).json({ models: out }); }
+      catch (e: any) { return res.status(200).json({ modelsError: String(e?.message || e).slice(0, 300) }); }
+    }
     return res.status(200).json({ ok: true, gemini: !!geminiKey(), gateway: !!gatewayToken(req), search: !!process.env.SEARCH_API_KEY });
   }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
@@ -145,7 +149,7 @@ export default async function handler(req: any, res: any) {
   } catch (e: any) {
     if (e?.code === 'NO_AI_KEY') return res.status(503).json({ error: 'AI is not configured yet: add GEMINI_API_KEY in Vercel project settings.', code: 'NO_AI_KEY' });
     console.error(`[api/${route}]`, e);
-    return res.status(502).json({ error: 'Mia could not reach the AI model right now. Please try again in a moment.', detail: String(e?.message || e).slice(0, 300) });
+    return res.status(502).json({ error: 'Mia could not reach the AI model right now. Please try again in a moment.', detail: String(e?.message || e).slice(0, 1500) });
   }
 }
 
