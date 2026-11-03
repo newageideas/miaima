@@ -18,7 +18,7 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
 </style>
 </head>
 <body><main>
-  <a href="/" class="meta" style="color:var(--cy)">← Back to Trend Picker</a>
+  <div style="display:flex;justify-content:space-between;align-items:center"><a href="/" id="back" class="meta" style="color:var(--cy)">← Back to Trend Picker</a><button id="closeEmbed" class="ghost hide" type="button" aria-label="Close" style="min-height:40px;padding:8px 12px">✕ Close</button></div>
   <h1>Code <span>notes</span></h1>
   <p class="sub">Paste code here from any phone or computer — it's saved privately so the team can copy it later or send it to Mia to preview. Paste the code as text (screenshots can't be copied).</p>
 
@@ -29,7 +29,7 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
   </section>
 
   <section class="card hide" id="composer">
-    <label for="author">Your name</label><input id="author" autocomplete="name" placeholder="e.g. Sasha Mai Hernandez">
+    <label for="author">Your name</label><input id="author" autocomplete="name" placeholder="Your name" value="Sasha">
     <label for="title">Title</label><input id="title" placeholder="e.g. Galaxy background CSS (radial gradients + keyframes)">
     <label for="code">Code</label><textarea id="code" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="Paste HTML / CSS / JS — any length"></textarea>
     <div class="meta" id="stats"></div>
@@ -41,7 +41,7 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)}, pass="";
-  try{pass=localStorage.getItem("mia_notes_pass")||"";$("author").value=localStorage.getItem("mia_notes_author")||"";}catch(e){}
+  try{pass=localStorage.getItem("mia_notes_pass")||"";$("author").value=localStorage.getItem("mia_notes_author")||"Sasha";}catch(e){}
   function msg(t){$("msg").textContent=t||""}
   function api(method,body,q){return fetch("/api/notes"+(q||""),{method:method,headers:{"Content-Type":"application/json","x-notes-passcode":pass},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return{}}).then(function(d){if(!r.ok){var e=new Error(d.error||("HTTP "+r.status));e.status=r.status;throw e}return d})})}
   function unlocked(on){$("lock").classList.toggle("hide",on);$("composer").classList.toggle("hide",!on)}
@@ -65,8 +65,12 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
   $("code").addEventListener("input",function(){var c=$("code").value;$("stats").textContent=c?c.split("\n").length+" lines · "+c.length.toLocaleString()+" chars":""});
   $("save").onclick=function(){var code=$("code").value;if(!code.trim()){msg("Paste some code first.");return}
     var b=$("save");b.disabled=true;msg("Saving…");try{localStorage.setItem("mia_notes_author",$("author").value)}catch(e){}
-    api("POST",{author:$("author").value.trim()||"Anonymous",title:$("title").value.trim()||"Untitled snippet",code:code}).then(function(){$("code").value="";$("title").value="";$("stats").textContent="";msg("✅ Saved!");return load()}).catch(function(e){msg("⚠️ "+e.message+" — your code is still in the box.")}).finally(function(){b.disabled=false})};
+    api("POST",{author:$("author").value.trim()||"Anonymous",title:$("title").value.trim()||"Untitled snippet",code:code}).then(function(){$("code").value="";$("title").value="";$("stats").textContent="";return load().then(function(){msg("Saved ✓ — Ima can see it now");$("msg").style.color="#34d399";setTimeout(function(){$("msg").style.color=""},4000)})}).catch(function(e){msg("⚠️ "+e.message+" — your code is still in the box.")}).finally(function(){b.disabled=false})};
+  var embed=/[?&]embed=1/.test(location.search);
+  if(embed){$("back").classList.add("hide");$("closeEmbed").classList.remove("hide");$("closeEmbed").onclick=function(){parent.postMessage("cn-close",location.origin)}}
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^='/#note=']");if(a&&embed){e.preventDefault();parent.postMessage({cnSendToMia:decodeURIComponent(a.getAttribute("href").slice(7))},location.origin)}});
   if(pass)load();
 })();
 </script>
+<script src="/code-notes-fab.js" defer></script>
 </body></html>
