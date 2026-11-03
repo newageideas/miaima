@@ -345,3 +345,5 @@
   window.MiaEditor = { context: context, preview: preview, undo: undo, reset: reset, export: exportEdits, paste: openPaste, scan: scan, apply: function (a) { return applyBatch(a.filter(validate), true); } };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
+/* Warp button now controls the liquid background speed (galaxy canvas was replaced). */
+(function(){var b=document.getElementById("btnToggleWarp");if(!b)return;b.addEventListener("click",function(){var c=document.body.classList.toggle("lq-cruise");b.textContent=c?"🚀 Warp: Cruise":"🚀 Warp: Fast";});})();

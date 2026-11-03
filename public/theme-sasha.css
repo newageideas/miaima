@@ -17,8 +17,6 @@ body{
   background:radial-gradient(ellipse at 50% 15%,rgba(91,43,160,.22),transparent 55%),radial-gradient(ellipse at 15% 65%,rgba(104,54,173,.15),transparent 50%),radial-gradient(ellipse at 85% 85%,rgba(123,65,210,.14),transparent 45%),linear-gradient(145deg,#080611,#10091e,#080611);
   background-attachment:fixed;color:#f5efff;position:relative;isolation:isolate;overflow-x:hidden;
 }
-/* let Sasha's gradient show through the existing animated galaxy canvas */
-.galaxy-canvas{background:transparent!important;opacity:.75}
 body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 10% 35%,rgba(148,79,255,.12),transparent 40%),radial-gradient(ellipse at 90% 60%,rgba(111,61,210,.13),transparent 42%);filter:blur(35px)}
 body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 0% 45%,transparent 55%,rgba(153,92,255,.13) 56%,transparent 58%),radial-gradient(ellipse at 100% 75%,transparent 55%,rgba(153,92,255,.12) 56%,transparent 58%);opacity:.7}
 
@@ -52,3 +50,30 @@ h1,h2,h3{color:#eee3ff}
 @media (max-width:640px){.sasha-drops{display:none}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .app-container{position:relative;z-index:1}
+
+/* ---------- Liquid violet background (replaces galaxy canvas) ---------- */
+.liquid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 20%,#1a0d33 0%,#0b0718 55%,#05030b 100%);contain:strict}
+.liquid-bg svg{position:absolute;display:block}
+.lq-defs{position:absolute}
+.lq-silk{top:0;height:100%;width:42vw;min-width:160px;max-width:520px;will-change:transform}
+.lq-left{left:0}.lq-right{right:0}
+.lq-silk path{filter:drop-shadow(0 0 6px rgba(155,101,255,.5))} /* static filter, not animated */
+.lq-left{animation:lqDriftL 18s ease-in-out infinite alternate}
+.lq-right{animation:lqDriftR 21s ease-in-out infinite alternate}
+@keyframes lqDriftL{from{transform:translate3d(-6px,0,0) skewY(0)}to{transform:translate3d(10px,-14px,0) skewY(-1.5deg)}}
+@keyframes lqDriftR{from{transform:translate3d(6px,0,0) skewY(0)}to{transform:translate3d(-10px,12px,0) skewY(1.5deg)}}
+.lq-drips{top:0;width:min(34vw,220px);height:auto;filter:drop-shadow(0 0 8px rgba(155,101,255,.45))}
+.lq-drips-l{left:0}.lq-drips-r{right:0}
+.lq-fall{transform-box:fill-box;transform-origin:center;animation:lqFall 9s cubic-bezier(.55,0,.9,.5) infinite}
+.lq-fall.f2{animation-delay:-3s;animation-duration:11s}.lq-fall.f3{animation-delay:-5s}.lq-fall.f4{animation-delay:-7.5s;animation-duration:12s}
+@keyframes lqFall{0%,70%{transform:translateY(0) scale(.6);opacity:0}74%{opacity:1;transform:translateY(0) scale(1)}100%{transform:translateY(70px) scale(1.05);opacity:0}}
+.lq-dots{inset:0;width:100%;height:100%;opacity:.85}
+.lq-water{left:0;bottom:0;width:100%;height:20vh;min-height:100px;opacity:1}
+.lq-ripples .rp{transform-box:fill-box;transform-origin:center;stroke-opacity:0;animation:lqRipple 6s ease-out infinite}
+.lq-ripples .r2{animation-delay:2s}.lq-ripples .r3{animation-delay:4s}
+@keyframes lqRipple{0%{transform:scale(.15);stroke-opacity:.8}100%{transform:scale(3.2);stroke-opacity:0}}
+/* "Warp: Cruise" slows the background motion */
+body.lq-cruise .lq-left{animation-duration:40s}body.lq-cruise .lq-right{animation-duration:46s}
+@media (max-width:640px){.lq-silk{width:40vw;opacity:.7}.lq-silk path{filter:none}.lq-drips{width:26vw}.lq-water{height:14vh}}
+@media (prefers-reduced-motion: reduce){.liquid-bg *{animation:none!important}.lq-fall{opacity:.9}.lq-ripples .rp{stroke-opacity:.35}.lq-ripples .r2{transform:scale(1.8)}.lq-ripples .r3{transform:scale(2.8);stroke-opacity:.15}}

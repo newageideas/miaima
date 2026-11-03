@@ -2089,7 +2089,55 @@
 </head>
 <body>
   <!-- Fullscreen Traveling Galaxy Background Canvas -->
-  <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
+  <!-- Liquid violet background (based on Sasha's mockup): silk waves, top drips, droplets, water ripples. Pure SVG + CSS transforms. -->
+  <div id="liquidBg" class="liquid-bg" aria-hidden="true">
+    <svg class="lq-defs" width="0" height="0"><defs>
+      <linearGradient id="lqSilk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9c2ff" stop-opacity=".9"/><stop offset=".45" stop-color="#8b4dff" stop-opacity=".55"/><stop offset="1" stop-color="#3b1a7a" stop-opacity="0"/></linearGradient>
+      <linearGradient id="lqSilk2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a6ff" stop-opacity=".8"/><stop offset=".5" stop-color="#7a3cf0" stop-opacity=".45"/><stop offset="1" stop-color="#2a1259" stop-opacity="0"/></linearGradient>
+      <linearGradient id="lqDrip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a2aa8"/><stop offset=".6" stop-color="#9b65ff"/><stop offset="1" stop-color="#e6d6ff"/></linearGradient>
+      <radialGradient id="lqDrop" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="#c9a6ff" stop-opacity=".8"/><stop offset="1" stop-color="#5a2aa8" stop-opacity=".6"/></radialGradient>
+      <linearGradient id="lqWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a0d33" stop-opacity="0"/><stop offset=".35" stop-color="#2a1259" stop-opacity=".55"/><stop offset="1" stop-color="#080611" stop-opacity=".95"/></linearGradient>
+    </defs></svg>
+
+    <svg class="lq-silk lq-left" viewBox="0 0 400 1000" preserveAspectRatio="none">
+      <path class="lq-w1" d="M-60 120 C120 220 40 420 220 520 S120 820 -40 980 L-60 980Z" fill="url(#lqSilk)" opacity=".18"/>
+      <path class="lq-w2" d="M-40 260 C160 330 90 520 260 600 S160 860 20 1000" fill="none" stroke="url(#lqSilk)" stroke-width="3" opacity=".7"/>
+      <path class="lq-w3" d="M-20 300 C140 380 70 560 230 640 S140 880 0 1000" fill="none" stroke="url(#lqSilk)" stroke-width="1.2" opacity=".55"/>
+    </svg>
+    <svg class="lq-silk lq-right" viewBox="0 0 400 1000" preserveAspectRatio="none">
+      <path class="lq-w1" d="M460 60 C260 180 380 360 180 470 S300 760 440 900 L460 900Z" fill="url(#lqSilk2)" opacity=".18"/>
+      <path class="lq-w2" d="M440 180 C240 280 330 460 140 560 S270 820 420 960" fill="none" stroke="url(#lqSilk2)" stroke-width="3" opacity=".7"/>
+      <path class="lq-w3" d="M420 230 C250 320 320 500 160 600 S280 860 410 1000" fill="none" stroke="url(#lqSilk2)" stroke-width="1.2" opacity=".55"/>
+    </svg>
+
+    <svg class="lq-drips lq-drips-l" viewBox="0 0 200 160">
+      <path d="M0 0 H200 V8 C180 10 176 18 172 40 C169 58 160 60 157 40 C153 18 140 12 120 12 C100 12 96 20 94 70 C93 96 80 98 79 70 C77 22 60 14 40 14 C24 14 20 24 18 46 C17 60 8 60 7 46 C5 24 2 14 0 14Z" fill="url(#lqDrip)" opacity=".9"/>
+      <ellipse class="lq-fall f1" cx="86.5" cy="92" rx="5" ry="7" fill="url(#lqDrop)"/>
+      <ellipse class="lq-fall f2" cx="164.5" cy="54" rx="3.5" ry="5" fill="url(#lqDrop)"/>
+    </svg>
+    <svg class="lq-drips lq-drips-r" viewBox="0 0 200 160">
+      <path d="M0 0 H200 V14 C196 14 194 30 192 60 C190 84 180 84 179 60 C177 26 168 12 150 12 C130 12 126 22 124 44 C122 60 112 60 111 44 C109 20 96 10 70 10 C52 10 46 18 44 30 C42 40 34 40 33 30 C31 16 20 8 0 8Z" fill="url(#lqDrip)" opacity=".9"/>
+      <ellipse class="lq-fall f3" cx="185.5" cy="78" rx="5" ry="7" fill="url(#lqDrop)"/>
+      <ellipse class="lq-fall f4" cx="117.5" cy="56" rx="3.5" ry="5" fill="url(#lqDrop)"/>
+    </svg>
+
+    <svg class="lq-dots" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <ellipse cx="6" cy="38" rx=".5" ry=".7" fill="url(#lqDrop)"/><ellipse cx="93" cy="30" rx=".45" ry=".6" fill="url(#lqDrop)"/>
+      <ellipse cx="97" cy="52" rx=".35" ry=".5" fill="url(#lqDrop)"/><ellipse cx="4" cy="62" rx=".4" ry=".55" fill="url(#lqDrop)"/>
+      <ellipse cx="90" cy="70" rx=".5" ry=".7" fill="url(#lqDrop)"/><ellipse cx="9" cy="80" rx=".35" ry=".5" fill="url(#lqDrop)"/>
+    </svg>
+
+    <svg class="lq-water" viewBox="0 0 400 120" preserveAspectRatio="none">
+      <rect x="0" y="0" width="400" height="120" fill="url(#lqWater)"/>
+      <path d="M0 40 Q100 34 200 40 T400 40" stroke="#bd91ff" stroke-opacity=".6" fill="none"/>
+      <g class="lq-ripples" fill="none" stroke="#d9c2ff" stroke-width="1.4">
+        <ellipse class="rp r1" cx="200" cy="72" rx="40" ry="7"/>
+        <ellipse class="rp r2" cx="200" cy="72" rx="40" ry="7"/>
+        <ellipse class="rp r3" cx="200" cy="72" rx="40" ry="7"/>
+        <ellipse cx="200" cy="72" rx="6" ry="1.6" fill="#e6d6ff" fill-opacity=".7" stroke="none"/>
+      </g>
+    </svg>
+  </div>
   <div class="sasha-drops" aria-hidden="true"><div class="cursor-drop"></div><div class="cursor-drop"></div><div class="cursor-drop"></div></div>
 
   <div class="app-container">
@@ -2106,7 +2154,7 @@
         <div class="tagline">Trend intelligence, built together.</div>
       </div>
       <div class="header-actions">
-        <button id="btnToggleWarp" class="btn btn-secondary btn-sm" title="Toggle galaxy travel speed">🚀 Warp: Fast</button>
+        <button id="btnToggleWarp" class="btn btn-secondary btn-sm" title="Toggle background motion speed">🚀 Warp: Fast</button>
         <div class="view-toggle-wrap">
           <button id="viewFeedBtn" class="btn-view-mode active" title="Switch to Feed List View">📋 Feed</button>
           <button id="viewKanbanBtn" class="btn-view-mode" title="Switch to Pipeline Kanban Board">📊 Pipeline Board</button>
