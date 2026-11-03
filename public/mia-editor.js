@@ -204,10 +204,9 @@
     ui();
     var nm = location.hash.match(/note=([\w-]+)/);
     if (nm) {
-      var pass = ""; try { pass = localStorage.getItem("mia_notes_pass") || ""; } catch (e) {}
-      fetch("/api/notes", { headers: { "x-notes-passcode": pass } }).then(function (r) { return r.json(); }).then(function (d) {
+      fetch("/api/notes").then(function (r) { return r.json(); }).then(function (d) {
         var n = (d.notes || []).find(function (x) { return x.id === nm[1]; });
-        if (n) { openPaste(n.code); toast("Loaded “" + n.title + "” from Code notes"); } else toast("Couldn't load that code note (check passcode on /notes.html).");
+        if (n) { openPaste(n.code); toast("Loaded “" + n.title + "” from Code notes"); } else toast("Couldn't load that code note (it may have been deleted).");
         window.history.replaceState(null, "", location.pathname);
       }).catch(function () {});
     }

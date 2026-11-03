@@ -22,30 +22,25 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
   <h1>Code <span>notes</span></h1>
   <p class="sub">Paste code here from any phone or computer — it's saved privately so the team can copy it later or send it to Mia to preview. Paste the code as text (screenshots can't be copied).</p>
 
-  <section class="card" id="lock">
-    <label for="pass">Shared passcode</label>
-    <input id="pass" type="password" autocomplete="current-password" placeholder="Ask Ima for the passcode">
-    <div class="row"><button id="unlock">Unlock</button></div>
-  </section>
-
-  <section class="card hide" id="composer">
+  <p class="meta" style="border:1px solid #f59e0b55;background:#f59e0b14;color:#fbbf24;border-radius:10px;padding:8px 10px">🌐 Visible to anyone with the link — no private info (no passwords, keys or personal data).</p>
+  <section class="card" id="composer">
     <label for="author">Your name</label><input id="author" autocomplete="name" placeholder="Your name" value="Sasha">
     <label for="title">Title</label><input id="title" placeholder="e.g. Galaxy background CSS (radial gradients + keyframes)">
     <label for="code">Code</label><textarea id="code" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="Paste HTML / CSS / JS — any length"></textarea>
     <div class="meta" id="stats"></div>
-    <div class="row"><button id="save">💾 Save note</button><button class="ghost" id="lockBtn" type="button">🔒 Lock</button></div>
+    <input id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+    <div class="row"><button id="save">💾 Save note</button></div>
   </section>
   <div id="msg" role="status"></div>
   <section id="list"></section>
 </main>
 <script>
 (function(){
-  var $=function(i){return document.getElementById(i)}, pass="";
-  try{pass=localStorage.getItem("mia_notes_pass")||"";$("author").value=localStorage.getItem("mia_notes_author")||"Sasha";}catch(e){}
+  var $=function(i){return document.getElementById(i)};
+  try{$("author").value=localStorage.getItem("mia_notes_author")||"Sasha";}catch(e){}
   function msg(t){$("msg").textContent=t||""}
-  function api(method,body,q){return fetch("/api/notes"+(q||""),{method:method,headers:{"Content-Type":"application/json","x-notes-passcode":pass},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return{}}).then(function(d){if(!r.ok){var e=new Error(d.error||("HTTP "+r.status));e.status=r.status;throw e}return d})})}
-  function unlocked(on){$("lock").classList.toggle("hide",on);$("composer").classList.toggle("hide",!on)}
-  function load(){msg("Loading…");return api("GET").then(function(d){unlocked(true);msg("");render(d.notes||[])}).catch(function(e){if(e.status===401){unlocked(false);pass="";try{localStorage.removeItem("mia_notes_pass")}catch(x){};msg("Wrong passcode.")}else msg("⚠️ "+e.message)})}
+  function api(method,body,q){return fetch("/api/notes"+(q||""),{method:method,headers:{"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return{}}).then(function(d){if(!r.ok){var e=new Error(d.error||("HTTP "+r.status));e.status=r.status;throw e}return d})})}
+  function load(){msg("Loading…");return api("GET").then(function(d){msg("");render(d.notes||[])}).catch(function(e){msg("⚠️ "+e.message)})}
   function render(notes){
     var L=$("list");L.innerHTML="";if(!notes.length){L.innerHTML='<p class="meta">No notes yet.</p>';return}
     notes.forEach(function(n){
@@ -56,20 +51,17 @@ textarea{min-height:42vh;font:13px/1.45 "JetBrains Mono",ui-monospace,monospace;
       var row=document.createElement("div");row.className="row";
       var cp=document.createElement("button");cp.textContent="📋 Copy";cp.onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(n.code):Promise.reject()).then(function(){cp.textContent="Copied ✓"},function(){var t=document.createElement("textarea");t.value=n.code;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();cp.textContent="Copied ✓"});setTimeout(function(){cp.textContent="📋 Copy"},1500)};
       var bot=document.createElement("a");bot.className="btn ghost";bot.href="/#note="+encodeURIComponent(n.id);bot.textContent="✨ Send to Mia to preview/add";
-      var dl=document.createElement("button");dl.className="danger";dl.textContent="🗑 Delete";dl.onclick=function(){if(!confirm("Delete “"+n.title+"”?"))return;api("DELETE",null,"?id="+encodeURIComponent(n.id)).then(load).catch(function(e){msg("⚠️ "+e.message)})};
+      var dl=document.createElement("button");dl.className="danger";dl.textContent="🗑 Delete";dl.onclick=function(){if(!confirm("Delete “"+n.title+"”?"))return;api("DELETE",null,"?confirm=yes&id="+encodeURIComponent(n.id)).then(load).catch(function(e){msg("⚠️ "+e.message)})};
       row.append(cp,bot,dl);c.append(h,m,pre,row);L.appendChild(c)})
   }
-  $("unlock").onclick=function(){pass=$("pass").value.trim();if(!pass)return;try{localStorage.setItem("mia_notes_pass",pass)}catch(e){};load()};
-  $("pass").addEventListener("keydown",function(e){if(e.key==="Enter")$("unlock").click()});
-  $("lockBtn").onclick=function(){pass="";try{localStorage.removeItem("mia_notes_pass")}catch(e){};$("list").innerHTML="";unlocked(false)};
   $("code").addEventListener("input",function(){var c=$("code").value;$("stats").textContent=c?c.split("\n").length+" lines · "+c.length.toLocaleString()+" chars":""});
-  $("save").onclick=function(){var code=$("code").value;if(!code.trim()){msg("Paste some code first.");return}
+  $("save").onclick=function(){var code=$("code").value;if(!code.trim()){msg("Paste some code first.");return}if(new Blob([code]).size>512000){msg("That note is over 500 KB — split it into two notes.");return}
     var b=$("save");b.disabled=true;msg("Saving…");try{localStorage.setItem("mia_notes_author",$("author").value)}catch(e){}
-    api("POST",{author:$("author").value.trim()||"Anonymous",title:$("title").value.trim()||"Untitled snippet",code:code}).then(function(){$("code").value="";$("title").value="";$("stats").textContent="";return load().then(function(){msg("Saved ✓ — Ima can see it now");$("msg").style.color="#34d399";setTimeout(function(){$("msg").style.color=""},4000)})}).catch(function(e){msg("⚠️ "+e.message+" — your code is still in the box.")}).finally(function(){b.disabled=false})};
+    api("POST",{website:$("website").value,author:$("author").value.trim()||"Anonymous",title:$("title").value.trim()||"Untitled snippet",code:code}).then(function(){$("code").value="";$("title").value="";$("stats").textContent="";return load().then(function(){msg("Saved ✓ — Ima can see it now");$("msg").style.color="#34d399";setTimeout(function(){$("msg").style.color=""},4000)})}).catch(function(e){msg("⚠️ "+e.message+" — your code is still in the box.")}).finally(function(){b.disabled=false})};
   var embed=/[?&]embed=1/.test(location.search);
   if(embed){$("back").classList.add("hide");$("closeEmbed").classList.remove("hide");$("closeEmbed").onclick=function(){parent.postMessage("cn-close",location.origin)}}
   document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^='/#note=']");if(a&&embed){e.preventDefault();parent.postMessage({cnSendToMia:decodeURIComponent(a.getAttribute("href").slice(7))},location.origin)}});
-  if(pass)load();
+  load();
 })();
 </script>
 <script src="/code-notes-fab.js" defer></script>
